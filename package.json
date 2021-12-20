@@ -1,0 +1,32 @@
+{
+  "name": "bweteta-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/index.js",
+    "dev": "nodemon --exec babel-node src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jacob-js/bweteta.git"
+  },
+  "author": "Jacob-dev",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jacob-js/bweteta/issues"
+  },
+  "homepage": "https://github.com/jacob-js/bweteta#readme",
+  "dependencies": {
+    "@babel/core": "^7.16.5",
+    "@babel/node": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "pg": "^8.7.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.12.0"
+  }
+}
