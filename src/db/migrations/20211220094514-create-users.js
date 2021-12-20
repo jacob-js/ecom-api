@@ -40,6 +40,9 @@ module.exports = {
       authProvider: {
         type: Sequelize.STRING
       },
+      otp: {
+        type: Sequelize.INTEGER
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
