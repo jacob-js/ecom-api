@@ -5,6 +5,7 @@ import { checkEmailExist, checkPhoneExist, loginSchema, schema } from "./users.v
 
 const usersRouter = Router()
                             .post('/', validateSchema(schema), checkEmailExist, checkPhoneExist, usersController.signup)
-                            .post('/login', validateSchema(loginSchema), usersController.login);
+                            .post('/login', validateSchema(loginSchema), usersController.login)
+                            .post('/oauth/google', usersController.googleLogin);
 
 export default usersRouter;
