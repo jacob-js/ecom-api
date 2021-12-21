@@ -6,6 +6,10 @@ export const hashPassword = (password) => {
   return hash;
 }
 
+export const comparePassword = (password, hash) => {
+  return bcrypt.compareSync(password, hash);
+}
+
 export const sendResponse = (res, status, message, data) => {
   res.status(status).json({
     status,

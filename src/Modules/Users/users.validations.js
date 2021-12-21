@@ -22,6 +22,11 @@ export const schema = yup.object({
     profession: yup.string().required('La profession est requise')
 })
 
+export const loginSchema = yup.object({
+    username: yup.string().required("L'identifiant est requis"),
+    password: yup.string().required("Le mot de passe est requis")
+})
+
 export const checkEmailExist = async(req, res, next) =>{
     const { email } = req.body;
     const user = await db.Users.findOne({ where: { email } });
