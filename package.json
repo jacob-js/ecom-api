@@ -22,6 +22,7 @@
     "@babel/core": "^7.16.5",
     "@babel/node": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
+    "@vonage/server-sdk": "^2.10.10",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",

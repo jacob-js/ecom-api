@@ -30,7 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     gender: DataTypes.STRING,
     profession: DataTypes.STRING,
     authProvider: DataTypes.STRING,
-    otp: DataTypes.INTEGER
+    otp: DataTypes.INTEGER,
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    }
   }, {
     sequelize,
     modelName: 'Users',

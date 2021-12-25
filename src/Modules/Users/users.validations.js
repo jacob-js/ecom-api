@@ -13,7 +13,8 @@ export const schema = yup.object({
     state: yup.string().required("La province est requise"),
     city: yup.string().required("La ville est requise"),
     birthdate: yup.date().required("La date de naissance est requise"),
-    phone: yup.string().required("Le numéro de téléphone est requis"),
+    phone: yup.string().required("Le numéro de téléphone est requis")
+                        .matches(/^[+243]/, "Le numéro de téléphone doit commencer avec +243"),
     confirmPassword: yup.string().when('password', {
         is: (password) => password && password.length >= 6 && password.match(/[a-zA-Z]/) && password.match(/[0-9]/),
         then: yup.string().required('Veuillez confirmer le mot de passe').oneOf([yup.ref('password')], 'Les mots de passe ne correspondent pas'),
@@ -25,6 +26,11 @@ export const schema = yup.object({
 export const loginSchema = yup.object({
     username: yup.string().required("L'identifiant est requis"),
     password: yup.string().required("Le mot de passe est requis")
+})
+
+export const verifySchema = yup.object({
+    username: yup.string().required("L'identifiant est requis"),
+    code: yup.number().required("Le code est requis")
 })
 
 export const checkEmailExist = async(req, res, next) =>{

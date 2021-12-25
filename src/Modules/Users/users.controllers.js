@@ -4,6 +4,7 @@ import { createToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { sendVerificationCode } from "../../Utils/nodemailer";
 import { getGoogleUser } from "../../Utils/oauth.google";
+import { sendSms } from "../../Utils/sms";
 
 const usersController = {
     signup: async (req, res) => {
@@ -13,6 +14,7 @@ const usersController = {
         const user = await db.Users.create({ ...req.body, password: hash, otp: code });
         const token = createToken(user.id);
         sendVerificationCode(user, code);
+        sendSms(user.phone, `Votre code de vérification est ${code}`);
         return sendResponse(res, 200, "Inscription réussie", { user, token });
     },
 
@@ -20,7 +22,7 @@ const usersController = {
         const { username, password } = req.body;
         try {
             const user = await db.Users.findOne({ where: {
-                [Op.or]: [{ email: username }, { phone: username }]	
+                [Op.or]: [{ email: username }, { phone: username }], isVerified: true
             } });
             if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
             const isMatch = comparePassword(password, user.password);
@@ -58,6 +60,23 @@ const usersController = {
             }
         } catch (error) {
             return sendResponse(res, 401, {error});
+        }
+    },
+
+    verify: async(req, res) =>{
+        const { code, username } = req.body;
+        const user = await db.Users.findOne({ where: {
+            [Op.or]: [{ email: username }, { phone: username }], isVerified: false
+        } }); 
+        if(user){
+            if(user.otp == code){
+                await user.update({ isVerified: true });
+                return sendResponse(res, 200, "Votre compte a été vérifié", user);
+            }else{
+                return sendResponse(res, 401, "Code de vérification incorrect");
+            }
+        }else{
+            return sendResponse(res, 401, "Utilisateur non trouvé");
         }
     }
 };
