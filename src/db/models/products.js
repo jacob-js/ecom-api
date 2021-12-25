@@ -29,7 +29,8 @@ module.exports = (sequelize, DataTypes) => {
     currency: DataTypes.STRING,
     specifications: DataTypes.ARRAY(DataTypes.JSON),
     owner: DataTypes.UUID,
-    isNew: DataTypes.BOOLEAN
+    isNew: DataTypes.BOOLEAN,
+    discount: DataTypes.DOUBLE
   }, {
     sequelize,
     modelName: 'Products',

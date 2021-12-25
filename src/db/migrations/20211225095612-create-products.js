@@ -41,6 +41,10 @@ module.exports = {
       isNew: {
         type: Sequelize.BOOLEAN
       },
+      discount: {
+        type: Sequelize.DOUBLE,
+        defaultValue: 0
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
