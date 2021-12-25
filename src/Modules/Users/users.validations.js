@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import db from '../../db/models';
 import { sendResponse } from '../../Utils/helpers';
 
@@ -33,6 +34,10 @@ export const verifySchema = yup.object({
     code: yup.number().required("Le code est requis")
 })
 
+export const adminSchema = yup.object({
+    username: yup.string().required("L'identifiant est requis")
+})
+
 export const checkEmailExist = async(req, res, next) =>{
     const { email } = req.body;
     const user = await db.Users.findOne({ where: { email } });
@@ -50,5 +55,22 @@ export const checkPhoneExist = async(req, res, next) =>{
         return sendResponse(res, 409, "Le numéro de téléphone existe déjà", null);
     }else{
         next();
+    }
+}
+
+export const checkAdminExist = async(req, res, next) =>{
+    const { username } = req.body;
+    const user = await db.Users.findOne({ where: {
+        [Op.or]: [{ email: username }, { phone: username }], isVerified: true
+    } });
+    if(user){
+        const admin = await db.Admins.findOne({ where: { userId: user.id } });
+        if(admin){
+            return sendResponse(res, 409, "L'administrateur existe déjà", null);
+        }
+        req.toAdmin = user;
+        return next();
+    }else{
+        return sendResponse(res, 404, "Utilisateur non trouvé");
     }
 }

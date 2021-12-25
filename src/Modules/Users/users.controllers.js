@@ -70,7 +70,7 @@ const usersController = {
         } }); 
         if(user){
             if(user.otp == code){
-                await user.update({ isVerified: true });
+                await user.update({ isVerified: true, otp: null });
                 return sendResponse(res, 200, "Votre compte a été vérifié", user);
             }else{
                 return sendResponse(res, 401, "Code de vérification incorrect");
@@ -78,6 +78,20 @@ const usersController = {
         }else{
             return sendResponse(res, 401, "Utilisateur non trouvé");
         }
+    },
+
+    createAdmin: async(req, res) =>{
+        const user = req.toAdmin;
+        const admin = await db.Admins.create({ userId: user.id });
+        const data = { ...admin.dataValues, User: user }
+        return sendResponse(res, 200, "Admin créé", data);
+    },
+
+    getAdmins: async(req, res) =>{
+        const admins = await db.Admins.findAll({
+            include: 'User'
+        });
+        return sendResponse(res, 200, "Liste des admins", admins);
     }
 };
 
