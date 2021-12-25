@@ -3,10 +3,10 @@ import { sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
 
 const productsController = {
-    getProducts: (req, res) => {
+    getProducts: async (req, res) => {
         let data;
         const {limit, offset} = req.query;
-        data = db.Products.findAndCountAll({
+        data = await db.Products.findAndCountAll({
             limit: parseInt(limit) || 10,
             offset: parseInt(offset) || 0
         });

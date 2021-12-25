@@ -7,8 +7,8 @@ export const productSchema = yup.object({
     price: yup.number().required('Le prix est réquis'),
     currency: yup.string().required('La dévise est réquise'),
     quantity: yup.number().required('La quantité est réquise'),
-    quantityMetric: yup.number().required('L\'unité de mesure de la quantité est réquise'),
+    quantityMetric: yup.string().required('L\'unité de mesure de la quantité est réquise'),
     specifications: yup.array(yup.object()),
-    discount: yup.number().min(0.0001, "Entre une valeur supérieur à zèro"),
+    discount: yup.number().min(0.0001, "Entre une valeur supérieure à zèro"),
     isNew: yup.boolean()
 })

@@ -1,6 +1,7 @@
 import fileUpload from 'express-fileupload';
 import cloudinary from 'cloudinary';
 import path from 'path';
+require('dotenv').config();
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_NAME,
