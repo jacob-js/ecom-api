@@ -26,6 +26,9 @@ module.exports = {
       quantity: {
         type: Sequelize.DOUBLE
       },
+      quantityMetric: {
+        type: Sequelize.STRING
+      },
       price: {
         type: Sequelize.DOUBLE
       },

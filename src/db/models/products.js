@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     categoryId: DataTypes.INTEGER,
     manufacturer: DataTypes.STRING,
     quantity: DataTypes.DOUBLE,
+    quantityMetric: DataTypes.STRING,
     price: DataTypes.DOUBLE,
     currency: DataTypes.STRING,
     specifications: DataTypes.ARRAY(DataTypes.JSON),
