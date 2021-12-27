@@ -10,7 +10,7 @@ const productsRouter = Router()
                             .post('/', verifyToken, checkIsAdmin, fUploadMiddlware, validateSchema(productSchema), checkProductNameExist, productsController.create)
                             .get('/:id', productsController.productDetail)
                             .put('/:id',  verifyToken, checkIsAdmin, fUploadMiddlware, checkUpdateProductNameExist, productsController.productDetail)
-                            .delete('/:id', productsController.productDetail)
+                            .delete('/:id', verifyToken, checkIsAdmin, productsController.productDetail)
                             .post('/colors', verifyToken, checkIsAdmin, fUploadMiddlware, validateSchema(productColorSchema), productsController.createProductColor);
 
 export default productsRouter;
