@@ -1,3 +1,5 @@
+import db from '../../db/models';
+
 const yup = require('yup');
 
 export const productSchema = yup.object({
@@ -12,3 +14,30 @@ export const productSchema = yup.object({
     discount: yup.number().min(0.0001, "Entre une valeur supérieure à zèro"),
     isNew: yup.boolean()
 })
+
+export const productColorSchema = yup.object({
+    name: yup.string().required('Le nom de la couleur est requis'),
+    productId: yup.string().uuid("Entrer un uuid valide").required('Le produit est requis')
+})
+
+export const checkProductNameExist = async (req, res, next) => {
+    const { name } = req.body;
+    const product = await db.Products.findOne({ where: { name } });
+    if(product){
+        return sendResponse(res, 400, "Le produit existe déjà");
+    }
+    next();
+}
+
+export const checkUpdateProductNameExist = async (req, res, next) => {
+    const { name } = req.body;
+   if(name){
+        const product = await db.Products.findOne({ where: { name } });
+        if(product){
+            if(product.id !== req.params.id){
+                return sendResponse(res, 400, "Le produit existe déjà");
+            }
+        }
+   }
+    next();
+}

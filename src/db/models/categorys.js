@@ -15,7 +15,8 @@ module.exports = (sequelize, DataTypes) => {
   };
   Categorys.init({
     name: DataTypes.STRING,
-    cover: DataTypes.STRING
+    cover: DataTypes.STRING,
+    isTop: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Categorys',

@@ -14,6 +14,10 @@ module.exports = {
       cover: {
         type: Sequelize.STRING
       },
+      isTop: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

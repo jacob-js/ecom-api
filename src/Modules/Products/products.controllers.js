@@ -8,16 +8,55 @@ const productsController = {
         const {limit, offset} = req.query;
         data = await db.Products.findAndCountAll({
             limit: parseInt(limit) || 10,
-            offset: parseInt(offset) || 0
+            offset: parseInt(offset) || 0,
+            include: 'Colors'
         });
 
         return sendResponse(res, 200, null, data);
     },
 
     async create(req, res) {
-        const cover = await uploadProductImage(req);
+        const cover = await uploadProductImage(req, 'cover');
         const product = await db.Products.create({ ...req.body, cover });
         return sendResponse(res, 201, "Produit enregistré", product);
+    },
+
+    async createProductColor(req, res) {
+        try {
+            const image = await uploadProductImage(req, 'image');
+            const productColor = await db.ProductColors.create({ ...req.body, image });
+            return sendResponse(res, 201, "Couleur enregistrée", productColor);
+        } catch (error) {
+            return sendResponse(res, 400, "Une image est requise");
+        }
+    },
+    
+    async productDetail(req, res) {
+        let product;
+        const {method} = req;
+        try {
+            product = await db.Products.findOne({
+                where: { id: req.params.id },
+                include: 'Colors'
+            });
+        } catch (error) {
+            return sendResponse(res, 404, "Produit introuvable");
+        }
+        if(method === 'GET'){
+            return sendResponse(res, 200, null, product);
+        }else if(method === 'DELETE'){
+            await product.destroy();
+            return sendResponse(res, 200, "Produit supprimé");
+        }else if(method === 'PUT'){
+            let cover;
+            if(req.files?.cover){
+                cover = await uploadProductImage(req, 'cover');
+            }
+            await product.update({ ...req.body, cover: cover || product.cover });
+            return sendResponse(res, 200, "Produit modifié", product);
+        }else{
+            return sendResponse(res, 404, "Méthode non supportée");
+        }
     }
 }
 

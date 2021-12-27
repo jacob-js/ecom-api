@@ -14,8 +14,8 @@ export const fUploadMiddlware = fileUpload({
     tempFileDir: path.join(__dirname, '../temp'),
 })
 
-export const uploadProductImage = async (req) =>{
-    const {cover} = req.files;
+export const uploadProductImage = async (req, field) =>{
+    const cover = req.files[field];
     if(cover){
         const res = await cloudinary.v2.uploader.upload(cover.tempFilePath);
         return res.url
