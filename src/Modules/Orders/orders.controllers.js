@@ -1,5 +1,5 @@
-const db = require("../../db/models");
-const { sendResponse } = require("../../Utils/helpers");
+import db from "../../db/models";
+import { sendResponse } from "../../Utils/helpers";
 
 const ordersController = {
     async orders(req, res) {
