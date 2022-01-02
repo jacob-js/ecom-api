@@ -10,6 +10,8 @@ const usersRouter = Router()
                             .post('/oauth/google', usersController.googleLogin)
                             .post('/verify', validateSchema(verifySchema), usersController.verify)
                             .post('/admins', verifyToken, checkIsAdmin, validateSchema(adminSchema), checkAdminExist, usersController.createAdmin)
-                            .get('/admins', verifyToken, checkIsAdmin, usersController.getAdmins);
+                            .get('/admins', verifyToken, checkIsAdmin, usersController.getAdmins)
+                            .get('/current', verifyToken, usersController.getCurrent)
+                            .get('/send-otp/:username', usersController.sendVerificationCode);
 
 export default usersRouter;

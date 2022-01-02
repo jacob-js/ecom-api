@@ -22,9 +22,10 @@ const usersController = {
         const { username, password } = req.body;
         try {
             const user = await db.Users.findOne({ where: {
-                [Op.or]: [{ email: username }, { phone: username }], isVerified: true
+                [Op.or]: [{ email: username }, { phone: username }]
             } });
             if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
+            if(!user.isVerified) return sendResponse(res, 401, "Veuillez vérifier votre compte", { isVerified: false });
             const isMatch = comparePassword(password, user.password);
             if(isMatch) {
                 const token = createToken(user.id);
@@ -92,6 +93,27 @@ const usersController = {
             include: 'User'
         });
         return sendResponse(res, 200, "Liste des admins", admins);
+    },
+
+    async getCurrent(req, res){
+        const user = await db.Users.findOne({ where: { id: req.userId } });
+        return sendResponse(res, 200, "Utilisateur", user);
+    },
+
+    async sendVerificationCode(req, res){
+        const {username} = req.params;
+        const user = await db.Users.findOne({ where: {
+            [Op.or]: [{ email: username }, { phone: username }]
+        } });
+        if(!user){ return sendResponse(res, 404, "Utilisateur non trouvé"); }
+        if(user.isVerified){ return sendResponse(res, 200, "Utilisateur déjà vérifié"); }
+        const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
+        await user.update({ otp: code });
+        sendVerificationCode(user, code);
+        if(user.phone){
+            sendSms(user.phone, `Votre code de vérification est ${code}`);
+        }
+        return sendResponse(res, 200, "Code de vérification envoyé", user);
     }
 };
 
