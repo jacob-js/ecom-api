@@ -96,7 +96,7 @@ const usersController = {
     },
 
     async getCurrent(req, res){
-        const user = await db.Users.findOne({ where: { id: req.userId } });
+        const user = await db.Users.findOne({ where: { id: req.user.id } });
         return sendResponse(res, 200, "Utilisateur", user);
     },
 
