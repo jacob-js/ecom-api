@@ -32,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     specifications: DataTypes.ARRAY(DataTypes.JSON),
     owner: DataTypes.UUID,
     isNew: DataTypes.BOOLEAN,
-    discount: DataTypes.DOUBLE
+    discount: DataTypes.DOUBLE,
+    isBest: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Products',
