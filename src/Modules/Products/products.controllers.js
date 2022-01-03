@@ -5,12 +5,35 @@ import { uploadProductImage } from "../../Utils/imageUpload.util";
 const productsController = {
     getProducts: async (req, res) => {
         let data;
-        const {limit, offset} = req.query;
-        data = await db.Products.findAndCountAll({
-            limit: parseInt(limit) || 10,
-            offset: parseInt(offset) || 0,
-            include: 'Colors'
-        });
+        const {limit, offset, isBest, bigDiscount} = req.query;
+        if(isBest) {
+            data = await db.Products.findAndCountAll({
+                where: {
+                    isBest: true
+                },
+                limit: limit,
+                offset: offset,
+                limit: parseInt(limit) || 10,
+                offset: parseInt(offset) || 0,
+                include: 'Colors',
+                order: [['createdAt', 'DESC']]
+            });
+        } else if(bigDiscount) {
+            data = await db.Products.findAndCountAll({
+                limit: parseInt(limit) || 10,
+                offset: parseInt(offset) || 0,
+                include: 'Colors',
+                order: [['discount', 'DESC']]
+            });
+        }
+        else {
+            data = await db.Products.findAndCountAll({
+                limit: parseInt(limit) || 10,
+                offset: parseInt(offset) || 0,
+                include: 'Colors',
+                order: [['createdAt', 'DESC']]
+            });
+        }
 
         return sendResponse(res, 200, null, data);
     },
