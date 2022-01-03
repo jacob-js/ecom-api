@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: DataTypes.STRING,
-    description: DataTypes.STRING,
+    description: DataTypes.TEXT,
     cover: DataTypes.STRING,
     categoryId: DataTypes.INTEGER,
     manufacturer: DataTypes.STRING,

@@ -1,4 +1,5 @@
 import db from '../../db/models';
+import { sendResponse } from '../../Utils/helpers';
 
 const yup = require('yup');
 
@@ -21,7 +22,12 @@ export const productSchema = yup.object({
 export const productColorSchema = yup.object({
     name: yup.string().required('Le nom de la couleur est requis'),
     productId: yup.string().uuid("Entrer un uuid valide").required('Le produit est requis')
-})
+});
+
+export const productRatingSchema = yup.object({
+    value: yup.number().min(1, "Entrer une valeur supérieure à zéro").max(5, "Entrer une valeur inférieure à cinq"),
+    comment: yup.string()
+});
 
 export const checkProductNameExist = async (req, res, next) => {
     const { name } = req.body;
@@ -43,4 +49,14 @@ export const checkUpdateProductNameExist = async (req, res, next) => {
         }
    }
     next();
+}
+
+export const checkProductRatingExist = async (req, res, next) => {
+    const {productId} = req.params;
+    const rating = await db.ProductRatings.findOne({ where: { productId, userId: req.user.id } });
+    if(rating){
+        return sendResponse(res, 409, "Vous avez déjà noté ce produit");
+    }else{
+        next();
+    }
 }

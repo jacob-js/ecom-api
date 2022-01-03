@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import router from './Router';
+import morgan from 'morgan';
 
 const app = express();
 const whiteList = [ 'http://localhost:3000' ]
@@ -8,6 +9,7 @@ const devMode = process.env.NODE_ENV === 'development';
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(morgan('combined'));
 app.use(cors({
     origin: function (origin, callback) {
       if (whiteList.indexOf(origin) !== -1) {

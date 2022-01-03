@@ -80,6 +80,41 @@ const productsController = {
         }else{
             return sendResponse(res, 404, "Méthode non supportée");
         }
+    },
+
+    async productRatings(req, res) {
+        const {method} = req;
+        if(method === 'GET'){
+            const ratings = await db.ProductRatings.findAll({
+                where: { productId: req.params.productId },
+                include: 'User',
+                order: [['createdAt', 'DESC']]
+            });
+            const medium = ratings.reduce((acc, cur) => acc + cur.value, 0) / ratings.length;
+            return sendResponse(res, 200, null, { ratings, medium });
+        }else if(method === 'POST'){
+            const rating = await db.ProductRatings.create({ ...req.body, productId: req.params.productId, userId: req.user.id });
+            return sendResponse(res, 201, "Note enregistrée", rating);
+        }else if(method === 'DELETE'){
+            await db.ProductRatings.destroy({
+                where: {
+                    productId: req.params.productId,
+                    userId: req.user.id
+                }
+            });
+            return sendResponse(res, 200, "Note supprimée");
+        }else if(method === 'PUT'){
+            await db.ProductRatings.update({ ...req.body }, {
+                where: {
+                    productId: req.params.productId,
+                    userId: req.user.id
+                }
+            });
+            return sendResponse(res, 200, "Note modifiée");
+        }
+        else{
+            return sendResponse(res, 404, "Méthode non supportée");
+        }
     }
 }
 
