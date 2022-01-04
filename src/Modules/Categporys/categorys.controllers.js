@@ -54,6 +54,24 @@ const categorysController = {
         }else{
             return sendResponse(res, 404, "Méthode non supportée");
         }
+    },
+
+    async getProductsByCategory(req, res){
+        const { categoryName } = req.params;
+        const { limit, offset } = req.query;
+        const category = await db.Categorys.findOne({
+            where: { name: categoryName }
+        });
+        if(category){
+            const products = await db.Products.findAndCountAll({
+                where: { categoryId: category.id },
+                limit: parseInt(limit) || 10,
+                offset: parseInt(offset) || 0
+            });
+            return sendResponse(res, 200, null, products);
+        }else{
+            return sendResponse(res, 200, { count: 0, rows: [] });
+        }
     }
 };
 

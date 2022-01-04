@@ -10,6 +10,7 @@ const categorysRouter = Router()
                             .post('/', verifyToken, checkIsAdmin, fUploadMiddlware, validateSchema(categorySchema), checkCategoryNameExist, categorysController.categorys)
                             .get('/:id', categorysController.categoryDetail)
                             .put('/:id',  verifyToken, checkIsAdmin, fUploadMiddlware, checkUpdateCategoryNameExist, categorysController.categoryDetail)
-                            .delete('/:id', verifyToken, checkIsAdmin, categorysController.categoryDetail);
+                            .delete('/:id', verifyToken, checkIsAdmin, categorysController.categoryDetail)
+                            .get('/products/:categoryName', categorysController.getProductsByCategory);
 
 export default categorysRouter;
