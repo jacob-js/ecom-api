@@ -1,6 +1,7 @@
 import db from "../../db/models";
 import { sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
+import { Op } from 'sequelize';
 
 const productsController = {
     getProducts: async (req, res) => {
@@ -23,10 +24,12 @@ const productsController = {
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
                 include: 'Colors',
-                order: [['discount', 'DESC']]
+                order: [['discount', 'DESC']],
+                where: {
+                    discount: {[Op.gt]: 0}
+                }
             });
-        }
-        else {
+        }else {
             data = await db.Products.findAndCountAll({
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
@@ -34,6 +37,7 @@ const productsController = {
                 order: [['createdAt', 'DESC']]
             });
         }
+        
 
         return sendResponse(res, 200, null, data);
     },
