@@ -16,14 +16,14 @@ const productsController = {
                 offset: offset,
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: 'Colors',
+                include: ['Colors', 'Ratings', 'Category'],
                 order: [['createdAt', 'DESC']]
             });
         } else if(bigDiscount) {
             data = await db.Products.findAndCountAll({
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: 'Colors',
+                include: ['Colors', 'Ratings', 'Category'],
                 order: [['discount', 'DESC']],
                 where: {
                     discount: {[Op.gt]: 0}
@@ -33,7 +33,7 @@ const productsController = {
             data = await db.Products.findAndCountAll({
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: 'Colors',
+                include: ['Colors', 'Ratings', 'Category'],
                 order: [['createdAt', 'DESC']]
             });
         }
@@ -64,7 +64,7 @@ const productsController = {
         try {
             product = await db.Products.findOne({
                 where: { id: req.params.id },
-                include: 'Colors'
+                include: [ 'Colors', 'Category', 'Ratings' ]
             });
         } catch (error) {
             return sendResponse(res, 404, "Produit introuvable");

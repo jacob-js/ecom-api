@@ -16,7 +16,8 @@ export const productSchema = yup.object({
         value: yup.string().required("La valeur est requise")
     })),
     discount: yup.number().min(0.0001, "Entre une valeur supérieure à zèro"),
-    isNew: yup.boolean()
+    isNew: yup.boolean(),
+    sizes: yup.array(yup.string())
 })
 
 export const productColorSchema = yup.object({
