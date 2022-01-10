@@ -66,7 +66,8 @@ const categorysController = {
             const products = await db.Products.findAndCountAll({
                 where: { categoryId: category.id },
                 limit: parseInt(limit) || 10,
-                offset: parseInt(offset) || 0
+                offset: parseInt(offset) || 0,
+                include: [ 'Colors', 'Ratings' ],
             });
             return sendResponse(res, 200, null, products);
         }else{
