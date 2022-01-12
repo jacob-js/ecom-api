@@ -19,7 +19,9 @@ module.exports = (sequelize, DataTypes) => {
     productId: DataTypes.UUID,
     quantity: DataTypes.DOUBLE,
     specifications: DataTypes.ARRAY(DataTypes.JSON),
-    orderId: DataTypes.UUID
+    orderId: DataTypes.UUID,
+    unitAmount: DataTypes.DOUBLE,
+    currency: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'OrderItems',
