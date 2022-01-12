@@ -33,6 +33,7 @@ const ordersController = {
             const orderItems = await Promise.all(products.map(async (product) => {
                 const { id, quantity, specifications } = product;
                 const prod = await db.Products.findOne({ where: { id } });
+                await prod.update({ quantity: prod.quantity - quantity });
                 const orderItem = await db.OrderItems.create({
                     productId: id,
                     quantity,
