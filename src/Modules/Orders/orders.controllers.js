@@ -29,22 +29,29 @@ const ordersController = {
             return sendResponse(res, 200, null, orders);
         }else if(method === 'POST') {
             const { products } = req.body;
-            const order = await db.Orders.create({ ...req.body, status: 'pending', userId: req.user.id });
-            const orderItems = await Promise.all(products.map(async (product) => {
-                const { id, quantity, specifications } = product;
-                const prod = await db.Products.findOne({ where: { id } });
-                await prod.update({ quantity: prod.quantity - quantity });
-                const orderItem = await db.OrderItems.create({
-                    productId: id,
-                    quantity,
-                    specifications,
-                    orderId: order.id,
-                    unitAmount: prod.price - (parseFloat(prod.discount || 0)),
+            let items = [];
+            const ref = Math.random().toString(36).substring(2, 9);
+            const order = await db.Orders.create({ ...req.body, status: 'pending', userId: req.user.id, ref });
+            new Promise( (resolve, reject) =>{
+                products.forEach(async (product, index) => {
+                    const { id, quantity, specifications } = product;
+                    const prod = await db.Products.findOne({ where: { id } });
+                    const orderItem = await db.OrderItems.create({
+                        productId: id,
+                        quantity,
+                        specifications,
+                        orderId: order.id,
+                        unitAmount: prod.price - (parseFloat(prod.discount || 0)),
+                        currency: prod.currency
+                    });
+                    const newQuantity = prod.quantity - orderItem.quantity;
+                    await db.Products.update({ quantity: newQuantity }, { where: { id } });
+                    items.push(orderItem);
+                    if(index === products.length - 1) resolve(orderItem);
                 });
-                return orderItem;
-            }));
-            console.log(orderItems);
-            return sendResponse(res, 201, "Votre commande a été envoyée", order);
+            }).then(orderItems =>{
+                return sendResponse(res, 201, "Votre commande a été envoyée", {order, items})
+            });     
         }else{
             return sendResponse(res, 405, "Methode non supportée", null);
         }
