@@ -56,6 +56,17 @@ const ordersController = {
             return sendResponse(res, 405, "Methode non supportée", null);
         }
 
+    },
+
+    async orderDetails(req, res) {
+        const { method } = req;
+        const { orderId } = req.params;
+        if(method === 'GET') {
+            const order = await db.Orders.findOne({ where: { id: orderId }, include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }] });
+            return sendResponse(res, 200, null, order);
+        }else{
+            return sendResponse(res, 405, "Methode non supportée", null);
+        }
     }
 };
 
