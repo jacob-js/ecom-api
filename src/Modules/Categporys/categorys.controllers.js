@@ -1,6 +1,7 @@
 import { uploadProductImage } from "../../Utils/imageUpload.util";
 import db from "../../db/models";
 import { sendResponse } from "../../Utils/helpers";
+import { Op } from "sequelize";
 
 const categorysController = {
     async categorys(req, res) {
@@ -59,20 +60,31 @@ const categorysController = {
     async getProductsByCategory(req, res){
         const { categoryName } = req.params;
         const { limit, offset } = req.query;
-        const category = await db.Categorys.findOne({
-            where: { name: categoryName }
-        });
-        if(category){
+        let categorys = [];
+        const categsArray = categoryName.split(',');
+        new Promise((resolve, reject) => {
+            categsArray.forEach(async (name, index) => {
+                const category = await db.Categorys.findOne({
+                    where: { name }
+                });
+                if(category){
+                    categorys.push(category);
+                }
+                if(index === (categsArray.length - 1)){
+                    resolve(categorys);
+                }
+            });
+        }).then(async() => {
             const products = await db.Products.findAndCountAll({
-                where: { categoryId: category.id },
+                where: { categoryId: {[ Op.or ]: [ categorys.map(category => category.id) ]} },
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: [ 'Colors', 'Ratings' ],
+                include: [ 'Colors', 'Ratings' ]
             });
             return sendResponse(res, 200, null, products);
-        }else{
-            return sendResponse(res, 200, { count: 0, rows: [] });
-        }
+        }).catch(() => {
+            return sendResponse(res, 500, "Something went wrong");
+        });          
     }
 };
 
