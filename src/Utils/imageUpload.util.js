@@ -19,5 +19,7 @@ export const uploadProductImage = async (req, field) =>{
     if(cover){
         const res = await cloudinary.v2.uploader.upload(cover.tempFilePath);
         return res.url
+    }else{
+        return null;
     }
 }

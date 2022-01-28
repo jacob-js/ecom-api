@@ -32,6 +32,7 @@ module.exports = (sequelize, DataTypes) => {
     profession: DataTypes.STRING,
     authProvider: DataTypes.STRING,
     otp: DataTypes.INTEGER,
+    cover: DataTypes.STRING,
     isVerified: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

@@ -58,6 +58,32 @@ export const checkPhoneExist = async(req, res, next) =>{
     }
 }
 
+export const checkUpdatePhoneExist = async(req, res, next) =>{
+    const { phone } = req.body;
+    if(phone){
+        const user = await db.Users.findOne({ where: { phone } });
+        if(user && user.id !== req.params.id){
+            return sendResponse(res, 409, "Le numéro de téléphone existe déjà", null);
+        }else{
+            next();
+        }
+    }else{
+        next();
+    }
+}
+
+export const checkUpdateEmailExist = async(req, res, next) =>{
+    const { email } = req.body;
+    if(email){
+        const user = await db.Users.findOne({ where: { email } });
+        if(user && user.id !== req.params.id){
+            return sendResponse(res, 409, "L'email existe déjà", null);
+        }else{
+            next();
+        }
+    }else{ next() }
+}
+
 export const checkAdminExist = async(req, res, next) =>{
     const { username } = req.body;
     const user = await db.Users.findOne({ where: {

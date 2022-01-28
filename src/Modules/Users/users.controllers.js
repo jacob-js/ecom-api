@@ -2,6 +2,7 @@ import { Op } from "sequelize";
 import db from "../../db/models";
 import { createToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
+import { uploadProductImage } from "../../Utils/imageUpload.util";
 import { sendVerificationCode } from "../../Utils/nodemailer";
 import { getGoogleUser } from "../../Utils/oauth.google";
 import { sendSms } from "../../Utils/sms";
@@ -114,7 +115,29 @@ const usersController = {
             sendSms(user.phone, `Votre code de vérification est ${code}`);
         }
         return sendResponse(res, 200, "Code de vérification envoyé", user);
-    }
+    },
+
+    async userDetails(req, res){
+        const { id } = req.params;
+        const { method } = req;
+        const user = await db.Users.findOne({ where: { id } });
+        if(!user){ return sendResponse(res, 404, "Utilisateur non trouvé"); }
+        if(method === "GET"){
+            return sendResponse(res, 200, "Utilisateur", user);
+        }else if(method === "PUT"){
+            let cover;
+            if(req.files){
+                cover = await uploadProductImage(req, 'cover');
+            }
+            await user.update({...req.body, cover: cover || user.cover});
+            return sendResponse(res, 200, "Utilisateur modifié", user);
+        }else if(method === "DELETE"){
+            await user.destroy();
+            return sendResponse(res, 200, "Utilisateur supprimé");
+        }else{
+            return sendResponse(res, 404, "Méthode non trouvée");
+        }
+    },
 };
 
 export default usersController;
