@@ -30,7 +30,11 @@ module.exports = (sequelize, DataTypes) => {
     city: DataTypes.STRING,
     address: DataTypes.STRING,
     reductionId: DataTypes.UUID,
-    additionnalInfo: DataTypes.STRING
+    additionnalInfo: DataTypes.STRING,
+    isGift: DataTypes.BOOLEAN,
+    receiverName: DataTypes.STRING,
+    receiverPhone: DataTypes.STRING,
+    giftMention: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'Orders',

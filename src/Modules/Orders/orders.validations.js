@@ -14,4 +14,13 @@ export const orderSchema = yup.object({
             value: yup.string().required("La valeur est requise")
         }))
     })).required("Les produits sont requis"),
+    isGift: yup.boolean(),
+    giftMention: yup.string().when('isGift', {
+        is: true,
+        then: yup.string().required("Le message du cadeau est requis"),
+    }),
+    receiverName: yup.string().when('isGift', {
+        is: true,
+        then: yup.string().required("Le nom du destinataire est requis"),
+    })
 });
