@@ -7,6 +7,7 @@ import { checkProductNameExist, checkProductRatingExist, checkUpdateProductNameE
 
 const productsRouter = Router()
                             .get('/', productsController.getProducts)
+                            .get('/search/all', productsController.searchProducts)
                             .post('/', verifyToken, checkIsAdmin, fUploadMiddlware, validateSchema(productSchema), checkProductNameExist, productsController.create)
                             .get('/:id', productsController.productDetail)
                             .put('/:id',  verifyToken, checkIsAdmin, fUploadMiddlware, checkUpdateProductNameExist, productsController.productDetail)

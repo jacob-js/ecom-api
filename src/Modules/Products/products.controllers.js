@@ -119,6 +119,64 @@ const productsController = {
         else{
             return sendResponse(res, 404, "Méthode non supportée");
         }
+    },
+
+    async searchProducts(req, res) {
+        const {query, limit, offset, categoryId} = req.query;
+        let products;
+        console.log(categoryId);
+        if(limit && offset){
+            if(categoryId && categoryId != 'undefined' && categoryId != 'null'){
+                products = await db.Products.findAndCountAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${query}%`
+                        },
+                        categoryId: categoryId
+                    },
+                    limit: parseInt(limit) || 10,
+                    offset: parseInt(offset) || 0,
+                    include: ['Colors', 'Ratings', 'Category'],
+                    order: [['createdAt', 'DESC']]
+                });
+            }else {
+                products = await db.Products.findAndCountAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${query}%`
+                        }
+                    },
+                    limit: parseInt(limit) || 10,
+                    offset: parseInt(offset) || 0,
+                    include: ['Colors', 'Ratings', 'Category'],
+                    order: [['createdAt', 'DESC']]
+                })
+            }
+        }else{
+            if(categoryId && categoryId != 'undefined' && categoryId != 'null'){
+                products = await db.Products.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${query}%`
+                        },
+                        categoryId: categoryId
+                    },
+                    include: ['Colors', 'Ratings', 'Category'],
+                    order: [['createdAt', 'DESC']]
+                });
+            }else {
+                products = await db.Products.findAll({
+                    where: {
+                        name: {
+                            [Op.iLike]: `%${query}%`
+                        }
+                    },
+                    include: ['Colors', 'Ratings', 'Category'],
+                    order: [['createdAt', 'DESC']]
+                });
+            }
+        }
+        return sendResponse(res, 200, null, products);
     }
 }
 
