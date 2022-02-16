@@ -34,7 +34,7 @@ const productsController = {
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
                 include: ['Colors', 'Ratings', 'Category'],
-                order: [['createdAt', 'DESC']]
+                order: [['name', 'DESC']]
             });
         }
         
