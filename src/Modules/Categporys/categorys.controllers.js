@@ -10,9 +10,10 @@ const categorysController = {
         const {isTop} = req.query;
         if(isTop){
             categorys = await db.Categorys.findAll({
-                where: { isTop: true }
+                where: { isTop: true },
+                include: ['ParentCateg', 'SubCategorys']
             });
-        }else{ categorys = await db.Categorys.findAll(); }
+        }else{ categorys = await db.Categorys.findAll({ include: ['ParentCateg', 'SubCategorys'] }); }
         if(method === 'GET'){
             return sendResponse(res, 200, null, categorys);
         }else if(method === 'POST'){
@@ -35,7 +36,8 @@ const categorysController = {
         const {method} = req;
         try {
             category = await db.Categorys.findOne({
-                where: { id: req.params.id }
+                where: { id: req.params.id },
+                include: ['ParentCateg', 'SubCategorys']
             });
         } catch (error) {
             return sendResponse(res, 404, "Categorie introuvable");
