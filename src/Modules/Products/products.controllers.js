@@ -177,6 +177,50 @@ const productsController = {
             }
         }
         return sendResponse(res, 200, null, products);
+    },
+
+    async suggestedProducts(req, res) {
+        const {limit, offset} = req.query;
+        const { method } = req;
+        const products = await db.SuggestedProducts.findAndCountAll({
+            limit: parseInt(limit) || 10,
+            offset: parseInt(offset) || 0,
+            include: 'User'
+        });
+        if(method === 'GET'){
+            return sendResponse(res, 200, null, products);
+        }else if(method === 'POST'){
+            const cover = await uploadProductImage(req, 'cover');
+            const suggestedProduct = await db.SuggestedProducts.create({ ...req.body, userId: req.user.id, cover });
+            return sendResponse(res, 201, "Produit suggéré à BWETETA", suggestedProduct);
+        }else{
+            return sendResponse(res, 404, "Méthode non supportée");
+        }
+    },
+
+    async suggestedProductDetail(req, res) {
+        const {method} = req;
+        let suggestedProduct;
+        try {
+            suggestedProduct = await db.SuggestedProducts.findOne({
+                where: { id: req.params.id },
+                include: 'User'
+            });
+        } catch (error) {
+            return sendResponse(res, 404, "Produit introuvable");
+        }
+        if(method === 'GET'){
+            return sendResponse(res, 200, null, suggestedProduct);
+        }else if(method === 'DELETE'){
+            await suggestedProduct.destroy();
+            return sendResponse(res, 200, "Produit suggéré supprimé");
+        }else if(method === 'PUT'){
+            const cover = await uploadProductImage(req, 'cover');
+            await suggestedProduct.update({ ...req.body, cover: cover || suggestedProduct.cover });
+            return sendResponse(res, 200, "Produit suggéré modifié", suggestedProduct);
+        }else{
+            return sendResponse(res, 404, "Méthode non supportée");
+        }
     }
 }
 

@@ -30,6 +30,21 @@ export const productRatingSchema = yup.object({
     comment: yup.string()
 });
 
+export const suggestedProductSchema = (req) => yup.object({
+    userId: yup.string().uuid("Entrer un uuid valide").required('L\'utilisateur est requis').default(req.user?.id),
+    username: yup.string().when('userId', {
+        is: (userId) => !userId,
+        then: yup.string().required('Votre nom est requis')
+    }),
+    userphone: yup.string().when('userId', {
+        is: (userId) => !userId,
+        then: yup.string().required('Votre numéro de téléphone est requis')
+    }),
+    productName: yup.string().required('Le nom du produit est requis'),
+    productDescript: yup.string().required('La description du produit est requise'),
+    cover: yup.string().required('L\'image du produit est requise').default(req.files?.cover)
+});
+
 export const checkProductNameExist = async (req, res, next) => {
     const { name } = req.body;
     const product = await db.Products.findOne({ where: { name } });
