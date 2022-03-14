@@ -5,6 +5,7 @@ import { fUploadMiddlware } from "../../Utils/imageUpload.util";
 import categorysController from "./categorys.controllers";
 import { categorySchema, checkCategoryNameExist, checkUpdateCategoryNameExist } from "./categorys.validations";
 import parentCategController from "./parentCateg.controller";
+import subCategoryController from "./subCategorys.controller";
 
 const categorysRouter = Router()
                             .get('/', categorysController.categorys)
@@ -16,5 +17,12 @@ const categorysRouter = Router()
                             .get('/parents/categorys', parentCategController.parentCategs)
                             .post('/parents/categorys', parentCategController.parentCategs)
                             .get('/parents/categorys/:id', parentCategController.parentCategDetail)
+                            .put('/parents/categorys/:id', parentCategController.parentCategDetail)
+                            .delete('/parents/categorys/:id', parentCategController.parentCategDetail)
+                            .get('/subs/categorys', subCategoryController.subCategs)
+                            .post('/subs/categorys', subCategoryController.subCategs)
+                            .get('/subs/categorys/:id', subCategoryController.subCategDetail)
+                            .put('/subs/categorys/:id', subCategoryController.subCategDetail)
+                            .delete('/subs/categorys/:id', subCategoryController.subCategDetail)
 
 export default categorysRouter;

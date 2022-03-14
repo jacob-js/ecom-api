@@ -1,13 +1,13 @@
 import db from "../../db/models";
 
-export default ParentCategController = {
+export default {
     parentCategs: async(req, res) => {
         let parents;
         const {method} = req;
         parents = await db.ProductsTypes.findAll({ include: [{ model: db.Categorys, as: 'Categorys', include: 'SubCategorys' }] });
 
         if(method === 'GET'){
-            return sendResponse(res, 200, null, categorys);
+            return sendResponse(res, 200, null, parents);
         }else if(method === 'POST'){
             const parent = await db.ProductsTypes.create({ ...req.body, cover });
             return sendResponse(res, 201, "Categorie parent enregistrée", parent);
