@@ -8,11 +8,13 @@ import { adminSchema, checkAdminExist, checkEmailExist, checkPhoneExist, checkUp
 const usersRouter = Router()
                             .post('/', validateSchema(schema), checkEmailExist, checkPhoneExist, usersController.signup)
                             .post('/login', validateSchema(loginSchema), usersController.login)
+                            .post('/admin/login', validateSchema(loginSchema), usersController.adminLogin)
                             .post('/oauth/google', usersController.googleLogin)
                             .post('/verify', validateSchema(verifySchema), usersController.verify)
                             .post('/admins', verifyToken, checkIsAdmin, validateSchema(adminSchema), checkAdminExist, usersController.createAdmin)
                             .get('/admins', verifyToken, checkIsAdmin, usersController.getAdmins)
                             .get('/current', verifyToken, usersController.getCurrent)
+                            .get('/current/admin', verifyToken, checkIsAdmin, usersController.getCurrent)
                             .get('/send-otp/:username', usersController.sendVerificationCode)
                             .get('/details/:id', verifyToken, usersController.userDetails)
                             .put('/details/:id', verifyToken, fUploadMiddlware, checkUpdateEmailExist, checkUpdatePhoneExist, usersController.userDetails);

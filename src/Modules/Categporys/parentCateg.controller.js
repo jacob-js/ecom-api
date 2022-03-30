@@ -1,4 +1,6 @@
 import db from "../../db/models";
+import { sendResponse } from "../../Utils/helpers";
+import { uploadProductImage } from "../../Utils/imageUpload.util";
 
 export default {
     parentCategs: async(req, res) => {
@@ -9,7 +11,8 @@ export default {
         if(method === 'GET'){
             return sendResponse(res, 200, null, parents);
         }else if(method === 'POST'){
-            const parent = await db.ProductsTypes.create({ ...req.body, cover });
+            const icon = await uploadProductImage(req, 'icon');
+            const parent = await db.ProductsTypes.create({ ...req.body, icon });
             return sendResponse(res, 201, "Categorie parent enregistrée", parent);
         }else{
             return sendResponse(res, 404, "Méthode non supportée");

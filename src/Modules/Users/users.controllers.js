@@ -38,6 +38,30 @@ const usersController = {
             return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
         }
     },
+    async adminLogin(req, res){
+        const { username, password } = req.body;
+        try {
+            const user = await db.Users.findOne({ where: {
+                [Op.or]: [{ email: username }, { phone: username }],
+            } });
+            if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
+            if(!user.isVerified) return sendResponse(res, 401, "Veuillez vérifier votre compte", { isVerified: false });
+            const isMatch = comparePassword(password, user.password);
+            if(isMatch) {
+                const admin = await db.Admins.findOne({ where: { userId: user.id } });
+                if(admin){
+                    const token = createToken(user.id);
+                    return sendResponse(res, 200, "Connexion réussie", { user, token });
+                }else{
+                    return sendResponse(res, 401, 'Accès refusé')
+                }
+            }else{
+                return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
+            }
+        } catch (error) {
+            return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
+        }
+    },
     googleLogin: async(req, res) =>{
         const {googleToken} = req.body;
         try {
