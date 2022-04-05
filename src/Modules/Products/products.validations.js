@@ -17,7 +17,7 @@ export const productSchema = yup.object({
     })),
     discount: yup.number().min(0.0001, "Entre une valeur supérieure à zèro"),
     isNew: yup.boolean(),
-    sizes: yup.array(yup.string())
+    sizes: yup.array(yup.string()).nullable()
 })
 
 export const productColorSchema = yup.object({

@@ -4,6 +4,7 @@ const yup = require('yup');
 
 export const categorySchema = yup.object({
     name: yup.string().required('Le nom de la catégorie est requis'),
+    typeId: yup.number().required('La catégorie parent est requise'),
     isTop: yup.boolean()
 })
 

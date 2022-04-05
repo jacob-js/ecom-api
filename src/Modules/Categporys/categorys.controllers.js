@@ -39,13 +39,14 @@ const categorysController = {
                 where: { id: req.params.id },
                 include: ['ParentCateg', 'SubCategorys']
             });
+            if(!category) return sendResponse(res, 404, "Categorie introuvable");
         } catch (error) {
             return sendResponse(res, 404, "Categorie introuvable");
         }
         if(method === 'GET'){
             return sendResponse(res, 200, null, category);
         }else if(method === 'DELETE'){
-            await category.destroy();
+            await category.destroy({ cascade: true });
             return sendResponse(res, 200, "Categorie supprimée");
         }else if(method === 'PUT'){
             let cover;

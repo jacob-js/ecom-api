@@ -43,8 +43,11 @@ const productsController = {
     },
 
     async create(req, res) {
+        const specs = req.body.specifications;
+        const specifications = JSON.parse(specs);
+        const sizes = JSON.parse(req.body.sizes) || [];
         const cover = await uploadProductImage(req, 'cover');
-        const product = await db.Products.create({ ...req.body, cover });
+        const product = await db.Products.create({ ...req.body, cover, specifications, sizes });
         return sendResponse(res, 201, "Produit enregistré", product);
     },
 

@@ -10,7 +10,7 @@ const subCategoryController = {
         if(method === 'GET'){
             return sendResponse(res, 200, null, subs);
         }else if(method === 'POST'){
-            const sub = await db.ProductsTypes.create({ ...req.body, cover });
+            const sub = await db.SubCategorys.create({ ...req.body });
             return sendResponse(res, 201, "Sous-categorie enregistrée", sub);
         }else{
             return sendResponse(res, 404, "Méthode non supportée");
