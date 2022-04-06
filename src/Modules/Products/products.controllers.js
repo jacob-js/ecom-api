@@ -69,6 +69,9 @@ const productsController = {
                 where: { id: req.params.id },
                 include: [ 'Colors', 'Category', 'Ratings' ]
             });
+            if(!product){
+                return sendResponse(res, 404, "Produit introuvable");
+            }
         } catch (error) {
             return sendResponse(res, 404, "Produit introuvable");
         }

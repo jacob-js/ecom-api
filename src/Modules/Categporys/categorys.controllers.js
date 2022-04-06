@@ -18,10 +18,11 @@ const categorysController = {
             return sendResponse(res, 200, null, categorys);
         }else if(method === 'POST'){
             let cover;
+            const isTop = JSON.parse(req.body.isTop);
             if(req.files?.cover){
                 cover = await uploadProductImage(req, 'cover');
             }
-            if(req.body.isTop && !cover){
+            if(isTop && !cover){
                 return sendResponse(res, 400, "Une image est requise");
             }
             const category = await db.Categorys.create({ ...req.body, cover });
