@@ -84,8 +84,14 @@ const productsController = {
             let cover;
             if(req.files?.cover){
                 cover = await uploadProductImage(req, 'cover');
-            }
-            await product.update({ ...req.body, cover: cover || product.cover });
+            };
+            const specs = req.body.specifications;
+            const specifications = JSON.parse(specs);
+            const sizes = JSON.parse(req.body.sizes) || [];
+            await product.update({
+                ...req.body, cover: cover || product.cover,
+                specifications: specifications || product.specifications, sizes: sizes || product.sizes
+            });
             return sendResponse(res, 200, "Produit modifié", product);
         }else{
             return sendResponse(res, 404, "Méthode non supportée");
