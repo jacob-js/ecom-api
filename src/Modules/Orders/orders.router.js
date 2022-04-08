@@ -8,6 +8,7 @@ const ordersRouter = Router()
                             .get('/', verifyToken, checkIsAdmin, ordersController.orders)
                             .get('/user/:userId', verifyToken, ordersController.orders)
                             .post('/', verifyToken, validateSchema(orderSchema), ordersController.orders)
-                            .get('/:orderId', verifyToken, ordersController.orderDetails);
+                            .get('/:orderId', verifyToken, ordersController.orderDetails)
+                            .put('/:ordersId', verifyToken, checkIsAdmin, ordersController.orders);
 
 export default ordersRouter;                            

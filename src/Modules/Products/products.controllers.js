@@ -60,6 +60,19 @@ const productsController = {
             return sendResponse(res, 400, "Une image est requise");
         }
     },
+
+    async deleteProdColor(req, res) {
+        try {
+            const productColor = await db.ProductColors.findByPk(req.params.id);
+            if(!productColor) {
+                return sendResponse(res, 404, "Couleur introuvable");
+            }
+            await productColor.destroy();
+            return sendResponse(res, 200, "Couleur supprimée");
+        } catch (error) {
+            return sendResponse(res, 500, "Une erreur est survenue");
+        }
+    },
     
     async productDetail(req, res) {
         let product;

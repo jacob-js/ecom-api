@@ -1,11 +1,12 @@
 import db from "../../db/models";
 import { sendResponse } from "../../Utils/helpers";
+import { Op } from "sequelize";
 
 const ordersController = {
     async orders(req, res) {
         const { method } = req;
         const { limit, offset } = req.query;
-        const { userId } = req.params;
+        const { userId, ordersId } = req.params;
         let orders;
         if(method === 'GET') {
             if(userId){
@@ -52,6 +53,11 @@ const ordersController = {
             }).then(orderItems =>{
                 return sendResponse(res, 201, "Votre commande a été envoyée", {order, items})
             });     
+        }else if(method === 'PUT'){
+            const { status } = req.body;
+            const ids = ordersId.split(',');
+            const orders = await db.Orders.update({ status }, { where: { id: { [Op.in]: ids } } });
+            return sendResponse(res, 200, "Opération effectuée avec succès", orders);
         }else{
             return sendResponse(res, 405, "Methode non supportée", null);
         }
