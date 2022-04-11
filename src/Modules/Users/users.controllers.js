@@ -162,6 +162,17 @@ const usersController = {
             return sendResponse(res, 404, "Méthode non trouvée");
         }
     },
+
+    async getUsers(req, res){
+        const { limit, offset } = req.query;
+        const users = await db.Users.findAndCountAll({
+            attributes: { exclude: ['password', 'otp'] },
+            limit: parseInt(limit) || 10,
+            offset: parseInt(offset) || 0,
+            order: [['createdAt', 'DESC']]
+        });
+        return sendResponse(res, 200, "Liste des utilisateurs", users);
+    }
 };
 
 export default usersController;

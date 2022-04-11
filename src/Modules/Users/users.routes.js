@@ -7,6 +7,7 @@ import { adminSchema, checkAdminExist, checkEmailExist, checkPhoneExist, checkUp
 
 const usersRouter = Router()
                             .post('/', validateSchema(schema), checkEmailExist, checkPhoneExist, usersController.signup)
+                            .get('/', verifyToken, checkIsAdmin, usersController.getUsers)
                             .post('/login', validateSchema(loginSchema), usersController.login)
                             .post('/admin/login', validateSchema(loginSchema), usersController.adminLogin)
                             .post('/oauth/google', usersController.googleLogin)
