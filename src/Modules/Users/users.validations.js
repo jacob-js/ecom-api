@@ -35,7 +35,9 @@ export const verifySchema = yup.object({
 })
 
 export const adminSchema = yup.object({
-    username: yup.string().required("L'identifiant est requis")
+    username: yup.string().required("L'identifiant est requis"),
+    role: yup.string().required("Le rôle est requis"),
+    permissions: yup.array().nullable()
 })
 
 export const checkEmailExist = async(req, res, next) =>{

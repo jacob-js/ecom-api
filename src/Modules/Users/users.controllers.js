@@ -108,7 +108,7 @@ const usersController = {
 
     createAdmin: async(req, res) =>{
         const user = req.toAdmin;
-        const admin = await db.Admins.create({ userId: user.id });
+        const admin = await db.Admins.create({ userId: user.id, ...req.body });
         const data = { ...admin.dataValues, User: user }
         return sendResponse(res, 200, "Admin créé", data);
     },

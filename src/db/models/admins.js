@@ -15,7 +15,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Admins.init({
-    userId: DataTypes.UUID
+    userId: DataTypes.UUID,
+    role: DataTypes.STRING,
+    permissions: DataTypes.ARRAY(DataTypes.STRING)
   }, {
     sequelize,
     modelName: 'Admins',
