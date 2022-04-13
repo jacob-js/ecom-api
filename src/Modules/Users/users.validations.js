@@ -10,17 +10,17 @@ export const schema = yup.object({
     password: yup.string().min(6, "Le mot de passe doit contenir au moins 6 caractères")
                 .required("Le mot de passe est requis").matches(/[a-zA-Z]/, "Le mot de passe doit contenir au moins une lettre")
                 .matches(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre"),
-    country: yup.string().required("Le pays est requis"),
-    state: yup.string().required("La province est requise"),
-    // city: yup.string().required("La ville est requise"),
-    // birthdate: yup.date().required("La date de naissance est requise"),
+    country: yup.string(),
+    state: yup.string(),
+    city: yup.string(),
+    birthdate: yup.date(),
     phone: yup.string().required("Le numéro de téléphone est requis")
                         .matches(/^[+243]/, "Le numéro de téléphone doit commencer avec +243"),
     confirmPassword: yup.string().when('password', {
         is: (password) => password && password.length >= 6 && password.match(/[a-zA-Z]/) && password.match(/[0-9]/),
         then: yup.string().required('Veuillez confirmer le mot de passe').oneOf([yup.ref('password')], 'Les mots de passe ne correspondent pas'),
     }),
-    // gender: yup.string().required('Le sexe est requis'),
+    gender: yup.string(),
     profession: yup.string().required('La profession est requise')
 })
 

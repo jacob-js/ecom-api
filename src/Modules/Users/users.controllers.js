@@ -110,7 +110,7 @@ const usersController = {
         const user = req.toAdmin;
         const admin = await db.Admins.create({ userId: user.id, ...req.body });
         const data = { ...admin.dataValues, User: user }
-        return sendResponse(res, 200, "Admin créé", data);
+        return sendResponse(res, 201, "Admin créé", data);
     },
 
     getAdmins: async(req, res) =>{
@@ -118,6 +118,21 @@ const usersController = {
             include: 'User'
         });
         return sendResponse(res, 200, "Liste des admins", admins);
+    },
+
+    async adminDetail(req, res){
+        const { id } = req.params;
+        const { method } = req;
+        const admin = await db.Admins.findOne({ where: { id }, include: 'User' });
+        if(!admin) return sendResponse(res, 404, "Admin non trouvé");
+        if(method === "GET") return sendResponse(res, 200, "Admin trouvé", admin);
+        else if(method === "DELETE"){
+            await admin.destroy();
+            return sendResponse(res, 200, "Admin supprimé");
+        }else if(method === "PUT"){
+            await admin.update({ ...req.body });
+            return sendResponse(res, 200, "Admin modifié", admin);
+        }else return sendResponse(res, 409, "Méthode non trouvée");
     },
 
     async getCurrent(req, res){
