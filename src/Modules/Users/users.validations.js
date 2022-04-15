@@ -21,7 +21,7 @@ export const schema = yup.object({
         then: yup.string().required('Veuillez confirmer le mot de passe').oneOf([yup.ref('password')], 'Les mots de passe ne correspondent pas'),
     }),
     gender: yup.string(),
-    profession: yup.string().required('La profession est requise')
+    profession: yup.string()
 })
 
 export const loginSchema = yup.object({
