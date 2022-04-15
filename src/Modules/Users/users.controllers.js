@@ -14,9 +14,8 @@ const usersController = {
         const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
         const user = await db.Users.create({ ...req.body, password: hash, otp: code });
         const token = createToken(user.id);
-        sendVerificationCode(user, code);
         sendSms(user.phone, `Votre code de vérification est ${code}`);
-        return sendResponse(res, 200, "Inscription réussie", { user, token });
+        return sendResponse(res, 201, "Inscription réussie", { user, token });
     },
 
     login: async(req, res) =>{

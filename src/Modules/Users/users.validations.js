@@ -6,7 +6,7 @@ const yup = require('yup');
 
 export const schema = yup.object({
     fullname: yup.string().required("Le nom complet est requis"),
-    email: yup.string().email("L'email n'est pas valide").required("L'email est requis"),
+    email: yup.string().email("L'email n'est pas valide"),
     password: yup.string().min(6, "Le mot de passe doit contenir au moins 6 caractères")
                 .required("Le mot de passe est requis").matches(/[a-zA-Z]/, "Le mot de passe doit contenir au moins une lettre")
                 .matches(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre"),
