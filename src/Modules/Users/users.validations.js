@@ -31,7 +31,7 @@ export const loginSchema = yup.object({
 
 export const verifySchema = yup.object({
     username: yup.string().required("L'identifiant est requis"),
-    code: yup.number().required("Le code est requis")
+    code: yup.string().required("Le code est requis")
 })
 
 export const adminSchema = yup.object({
