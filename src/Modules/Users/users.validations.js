@@ -30,7 +30,7 @@ export const loginSchema = yup.object({
 })
 
 export const verifySchema = yup.object({
-    username: yup.string().required("L'identifiant est requis"),
+    token: yup.string().required("Le token est requis"),
     code: yup.string().required("Le code est requis")
 })
 

@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import db from "../../db/models";
-import { createToken } from "../../Utils/auth.utils";
+import { createSignupToken, createToken, decodeSignupToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
 import { sendVerificationCode } from "../../Utils/nodemailer";
@@ -9,13 +9,25 @@ import { sendSms } from "../../Utils/sms";
 
 const usersController = {
     signup: async (req, res) => {
-        const { password } = req.body;
+        const { password, phone } = req.body;
         const hash = hashPassword(password);
         const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
-        const user = await db.Users.create({ ...req.body, password: hash, otp: code });
-        const token = createToken(user.id);
-        sendSms(user.phone, `Votre code de vérification est ${code}`);
-        return sendResponse(res, 201, "Inscription réussie", { user, token });
+        const token = createSignupToken({...req.body, password: hash}, code);
+        sendSms(phone, `Votre code de vérification est ${code} valide pendant 5 minutes`);
+        return sendResponse(res, 200, "Code de vérification envoyé", { token });
+    },
+
+    async validateAndCreateUser(req, res){
+        const { token } = req.body;
+        const body = await decodeSignupToken(token)
+        if(body){
+            const hash = hashPassword(password);
+            const user = await db.Users.create({ ...body, password: hash });
+            const token = createToken(user.id);
+            return sendResponse(res, 201, "Inscription réussie", { user, token });
+        }else{
+            return sendResponse(res, 403, "Le code de vérification est invalide");
+        }
     },
 
     login: async(req, res) =>{
@@ -85,23 +97,6 @@ const usersController = {
             }
         } catch (error) {
             return sendResponse(res, 401, {error});
-        }
-    },
-
-    verify: async(req, res) =>{
-        const { code, username } = req.body;
-        const user = await db.Users.findOne({ where: {
-            [Op.or]: [{ email: username }, { phone: username }], isVerified: false
-        } }); 
-        if(user){
-            if(user.otp == code){
-                await user.update({ isVerified: true, otp: null });
-                return sendResponse(res, 200, "Votre compte a été vérifié", user);
-            }else{
-                return sendResponse(res, 401, "Code de vérification incorrect");
-            }
-        }else{
-            return sendResponse(res, 401, "Utilisateur non trouvé");
         }
     },
 
