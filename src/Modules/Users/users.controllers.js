@@ -12,7 +12,7 @@ const usersController = {
         const { password, phone } = req.body;
         const hash = hashPassword(password);
         const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
-        const token = await createSignupToken({...req.body, password: hash}, code);
+        const token = createSignupToken({...req.body, password: hash}, code);
         sendSms(phone, `Votre code de vérification est ${code} valide pendant 5 minutes`);
         return sendResponse(res, 200, "Code de vérification envoyé", { token });
     },

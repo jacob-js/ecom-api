@@ -35,8 +35,9 @@ export const checkIsAdmin = async(req, res, next) =>{
     return sendResponse(res, 401, "Vous n'avez pas les droits pour effectuer cette action");
 }
 
-export const createSignupToken = async(userData, code) =>{
+export const createSignupToken = (userData, code) =>{
     const token = jwt.sign({userData, code}, process.env.JWT_SECRET, {expiresIn: '5min'});
+    return token
 }
 
 export const decodeSignupToken = async(token, bodyCode) =>{
