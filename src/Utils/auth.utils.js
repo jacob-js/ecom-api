@@ -44,7 +44,7 @@ export const decodeSignupToken = async(token, bodyCode) =>{
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET)
         if(decoded.code == bodyCode){
-            return decoded.body
+            return decoded.userData
         }else{
             return false
         }

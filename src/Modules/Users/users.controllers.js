@@ -13,16 +13,15 @@ const usersController = {
         const hash = hashPassword(password);
         const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
         const token = createSignupToken({...req.body, password: hash}, code);
-        sendSms(phone, `Votre code de vérification est ${code} valide pendant 5 minutes`);
+        sendSms(phone, `Votre code de verification est ${code} valide pendant 5 minutes`);
         return sendResponse(res, 200, "Code de vérification envoyé", { token });
     },
 
     async validateAndCreateUser(req, res){
-        const { token } = req.body;
-        const body = await decodeSignupToken(token)
-        if(body){
-            const hash = hashPassword(password);
-            const user = await db.Users.create({ ...body, password: hash });
+        const { token, code } = req.body;
+        const userData = await decodeSignupToken(token, code)
+        if(userData){
+            const user = await db.Users.create({ ...userData, password: hash });
             const token = createToken(user.id);
             return sendResponse(res, 201, "Inscription réussie", { user, token });
         }else{
