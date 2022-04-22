@@ -1,5 +1,5 @@
-const db = require("../../db/models");
-const { hashPassword } = require("../../Utils/helpers");
+import db from "../../db/models";
+import { hashPassword } from "../../Utils/helpers";
 import { Op } from 'sequelize';
 
 class UsersService{

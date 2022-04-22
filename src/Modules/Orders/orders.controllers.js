@@ -1,31 +1,22 @@
 import db from "../../db/models";
 import { sendResponse } from "../../Utils/helpers";
 import { Op } from "sequelize";
+import OrdersService from "./orders.service";
 
 const ordersController = {
     async orders(req, res) {
         const { method } = req;
-        const { limit, offset } = req.query;
+        const { limit, offset, status } = req.query;
         const { userId, ordersId } = req.params;
         let orders;
         if(method === 'GET') {
             if(userId){
-                orders = await db.Orders.findAndCountAll({
-                    where: {
-                        userId
-                    },
-                    limit: parseInt(limit) || 10,
-                    offset: parseInt(offset) || 0,
-                    order: [['createdAt', 'DESC']],
-                    include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
-                });
-            }else{
-                orders = await db.Orders.findAndCountAll({
-                    limit: parseInt(limit) || 10,
-                    offset: parseInt(offset) || 0,
-                    order: [['createdAt', 'DESC']],
-                    include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
-                });
+                orders = await OrdersService.getByUserId(userId, limit, offset);
+            }else if(status){
+                orders = await OrdersService.getByStatus(status, limit, offset)
+            }
+            else{
+                orders = await OrdersService.getAll(limit, offset);
             }
             return sendResponse(res, 200, null, orders);
         }else if(method === 'POST') {

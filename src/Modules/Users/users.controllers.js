@@ -153,7 +153,7 @@ const usersController = {
             await UsersService.resetPassword(user, newPwd);
             return sendResponse(res, 200, "Mot de passe moifié", user)
         }
-        return sendResponse(res, 504, "Methode non supportée", user);
+        return sendResponse(res, 405, "Methode non supportée");
     },
 
     async userDetails(req, res){
