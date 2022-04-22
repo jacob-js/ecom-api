@@ -3,7 +3,6 @@ import db from "../../db/models";
 import { createResetPwdToken, createSignupToken, createToken, decodeResetPwdToken, decodeSignupToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
-import { sendVerificationCode } from "../../Utils/nodemailer";
 import { getGoogleUser } from "../../Utils/oauth.google";
 import { sendSms } from "../../Utils/sms";
 import UsersService from "./users.service";
@@ -33,9 +32,7 @@ const usersController = {
     login: async(req, res) =>{
         const { username, password } = req.body;
         try {
-            const user = await db.Users.findOne({ where: {
-                [Op.or]: [{ email: username }, { phone: username }]
-            } });
+            const user = await UsersService.getByUsername(username);
             if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
             if(!user.isVerified) return sendResponse(res, 401, "Veuillez vérifier votre compte", { isVerified: false });
             const isMatch = comparePassword(password, user.password);
@@ -52,9 +49,7 @@ const usersController = {
     async adminLogin(req, res){
         const { username, password } = req.body;
         try {
-            const user = await db.Users.findOne({ where: {
-                [Op.or]: [{ email: username }, { phone: username }],
-            } });
+            const user = await UsersService.getByUsername(username);
             if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
             if(!user.isVerified) return sendResponse(res, 401, "Veuillez vérifier votre compte", { isVerified: false });
             const isMatch = comparePassword(password, user.password);
