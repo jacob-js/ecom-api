@@ -38,6 +38,8 @@ module.exports = (sequelize, DataTypes) => {
     discount: DataTypes.DOUBLE,
     isBest: DataTypes.BOOLEAN,
     sizes: DataTypes.ARRAY(DataTypes.STRING),
+    sales: DataTypes.INTEGER,
+    deletedAt: DataTypes.DATE
   }, {
     sequelize,
     modelName: 'Products',

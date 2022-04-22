@@ -57,6 +57,19 @@ const ordersController = {
             const { status } = req.body;
             const ids = ordersId.split(',');
             const orders = await db.Orders.update({ status }, { where: { id: { [Op.in]: ids } } });
+            if(status === 'delivered'){
+                orders.forEach(async order =>{
+                    const items = await db.OrderItems.findAll({ where: { orderId: order.id } });
+                    items.forEach(async item =>{
+                        const prod = await db.Products.findOne({ where: { id: item.productId } })
+                        if(prod){
+                            const quantity = prod.quantity - item.quantity
+                            const sales = prod.sales + item.quantity
+                            await prod.update({ quantity, sales })
+                        }
+                    })
+                })
+            }
             return sendResponse(res, 200, "Opération effectuée avec succès", orders);
         }else{
             return sendResponse(res, 405, "Methode non supportée", null);

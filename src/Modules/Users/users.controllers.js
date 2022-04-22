@@ -1,11 +1,12 @@
 import { Op } from "sequelize";
 import db from "../../db/models";
-import { createSignupToken, createToken, decodeSignupToken } from "../../Utils/auth.utils";
+import { createResetPwdToken, createSignupToken, createToken, decodeResetPwdToken, decodeSignupToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
 import { sendVerificationCode } from "../../Utils/nodemailer";
 import { getGoogleUser } from "../../Utils/oauth.google";
 import { sendSms } from "../../Utils/sms";
+import UsersService from "./users.service";
 
 const usersController = {
     signup: async (req, res) => {
@@ -133,20 +134,31 @@ const usersController = {
         return sendResponse(res, 200, "Utilisateur", user);
     },
 
-    async sendVerificationCode(req, res){
-        const {username} = req.params;
-        const user = await db.Users.findOne({ where: {
-            [Op.or]: [{ email: username }, { phone: username }]
-        } });
-        if(!user){ return sendResponse(res, 404, "Utilisateur non trouvé"); }
-        if(user.isVerified){ return sendResponse(res, 200, "Utilisateur déjà vérifié"); }
-        const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
-        await user.update({ otp: code });
-        sendVerificationCode(user, code);
-        if(user.phone){
-            sendSms(user.phone, `Votre code de vérification est ${code}`);
+    async resetPassword(req, res){
+        const { method } = req;
+        const {username} = req.query;
+        const user = await UsersService.getByUsername(username)
+        if(method === 'GET'){
+            if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); }
+            const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
+            const token = createResetPwdToken(user.id, code);
+            sendSms(user.phone, `Votre code de confirmation est : ${code}`)
+            return sendResponse(res, 200, "Code de confirmation envoyé", { token, user })
+        }else if(method === 'POST'){
+            const {token, code} = req.body;
+            const userId = decodeResetPwdToken(token, code);
+            if(userId){
+                return sendResponse(res, 200, null, { userId })
+            }else{
+                return sendResponse(res, 403, "Le code de vérification est invalide");
+            }
+        }else if(method === 'PUT'){
+            if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); };
+            const { newPwd } = req.body;
+            await UsersService.resetPassword(user, newPwd);
+            return sendResponse(res, 200, "Mot de passe moifié", user)
         }
-        return sendResponse(res, 200, "Code de vérification envoyé", user);
+        return sendResponse(res, 504, "Methode non supportée", user);
     },
 
     async userDetails(req, res){

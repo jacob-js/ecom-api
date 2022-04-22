@@ -19,7 +19,7 @@ const usersRouter = Router()
                             .delete('/admins/:id', verifyToken, checkIsAdmin, usersController.adminDetail)
                             .get('/current', verifyToken, usersController.getCurrent)
                             .get('/current/admin', verifyToken, checkIsAdmin, usersController.getCurrent)
-                            .get('/send-otp/:username', usersController.sendVerificationCode)
+                            .get('/reset-password', usersController.resetPassword)
                             .get('/details/:id', verifyToken, usersController.userDetails)
                             .put('/details/:id', verifyToken, fUploadMiddlware, checkUpdateEmailExist, checkUpdatePhoneExist, usersController.userDetails);
 

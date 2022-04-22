@@ -51,4 +51,22 @@ export const decodeSignupToken = async(token, bodyCode) =>{
     } catch (error) {
         return false
     }
-}
+};
+
+export const createResetPwdToken = (userId, code) =>{
+    const token = jwt.sign({userId, code}, process.env.JWT_SECRET, {expiresIn: '5min'});
+    return token
+};
+
+export const decodeResetPwdToken = async(token, bodyCode) =>{
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        if(decoded.code == bodyCode){
+            return decoded.userId
+        }else{
+            return false
+        }
+    } catch (error) {
+        return false
+    }
+};
