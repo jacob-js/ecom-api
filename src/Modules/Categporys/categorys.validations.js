@@ -22,7 +22,7 @@ export const checkUpdateCategoryNameExist = async (req, res, next) => {
    if(name){
         const category = await db.Categorys.findOne({ where: { name } });
         if(category){
-            if(category.id !== req.params.id){
+            if(category.pk !== req.params.id){
                 return sendResponse(res, 400, "La catégorie existe déjà");
             }
         }

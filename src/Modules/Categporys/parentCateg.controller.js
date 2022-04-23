@@ -24,7 +24,7 @@ export default {
         const {method} = req;
         try {
             parent = await db.ProductsTypes.findOne({
-                where: { id: req.params.id },
+                where: { pk: req.params.id },
                 include: [{ model: db.Categorys, as: 'Categorys', include: 'SubCategorys' }]
             });
         } catch (error) {

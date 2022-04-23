@@ -16,6 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Categorys.init({
+    pk: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     name: DataTypes.STRING,
     cover: DataTypes.STRING,
     isTop: DataTypes.BOOLEAN,

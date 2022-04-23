@@ -37,7 +37,7 @@ const categorysController = {
         const {method} = req;
         try {
             category = await db.Categorys.findOne({
-                where: { id: req.params.id },
+                where: { pk: req.params.id },
                 include: ['ParentCateg', 'SubCategorys']
             });
             if(!category) return sendResponse(res, 404, "Categorie introuvable");
@@ -80,7 +80,7 @@ const categorysController = {
             });
         }).then(async() => {
             const products = await db.Products.findAndCountAll({
-                where: { categoryId: {[ Op.or ]: [ categorys.map(category => category.id) ]} },
+                where: { categoryId: {[ Op.or ]: [ categorys.map(category => category.pk) ]} },
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
                 include: [ 'Colors', 'Ratings' ]

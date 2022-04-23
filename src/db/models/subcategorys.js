@@ -15,6 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   SubCategorys.init({
+    pk: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true
+    },
     name: DataTypes.STRING,
     categId: DataTypes.INTEGER
   }, {

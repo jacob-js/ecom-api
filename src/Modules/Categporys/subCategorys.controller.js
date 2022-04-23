@@ -22,7 +22,7 @@ const subCategoryController = {
         const {method} = req;
         try {
             sub = await db.SubCategorys.findOne({
-                where: { id: req.params.id },
+                where: { pk: req.params.id },
                 include: 'Category'
             });
         } catch (error) {
