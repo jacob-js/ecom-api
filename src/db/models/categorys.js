@@ -24,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     name: DataTypes.STRING,
     cover: DataTypes.STRING,
     isTop: DataTypes.BOOLEAN,
-    typeId: DataTypes.INTEGER
+    typeId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'Categorys',

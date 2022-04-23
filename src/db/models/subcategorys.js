@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true
     },
     name: DataTypes.STRING,
-    categId: DataTypes.INTEGER
+    categId: DataTypes.UUID
   }, {
     sequelize,
     modelName: 'SubCategorys',
