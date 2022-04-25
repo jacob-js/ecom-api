@@ -16,14 +16,14 @@ const productsController = {
                 offset: offset,
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: ['Colors', 'Ratings', 'Category'],
+                include: ['Colors', 'Ratings', 'Category', 'SubCategory'],
                 order: [['sales', 'DESC']]
             });
         } else if(bigDiscount) {
             data = await db.Products.findAndCountAll({
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: ['Colors', 'Ratings', 'Category'],
+                include: ['Colors', 'Ratings', 'Category', 'SubCategory'],
                 order: [['discount', 'DESC']],
                 where: {
                     discount: {[Op.gt]: 0},
@@ -34,7 +34,7 @@ const productsController = {
             data = await db.Products.findAndCountAll({
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
-                include: ['Colors', 'Ratings', 'Category'],
+                include: ['Colors', 'Ratings', 'Category', 'SubCategory'],
                 order: [['name', 'DESC']],
                 where: { deletedAt: null }
             });

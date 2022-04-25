@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
       Products.hasMany(models.ProductColors, { as: 'Colors', foreignKey: 'productId', onDelete: 'CASCADE' });
       Products.belongsTo(models.Categorys, { as: 'Category', foreignKey: 'categoryId', onDelete: 'CASCADE' });
-      Products.belongsTo(models.SubCategorys, { as: 'Category', foreignKey: 'categoryId', onDelete: 'CASCADE' });
+      Products.belongsTo(models.SubCategorys, { as: 'SubCategory', foreignKey: 'categoryId', onDelete: 'CASCADE' });
       Products.hasMany(models.ProductRatings, { as: 'Ratings', foreignKey: 'productId', onDelete: 'CASCADE' });
     }
   };
