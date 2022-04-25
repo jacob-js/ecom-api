@@ -69,6 +69,11 @@ const ordersController = {
 
     },
 
+    async ordersSum(req, res) {
+        const orders = await OrdersService.getOrdersSum();
+        return sendResponse(res, 200, null, orders);
+    },
+
     async orderDetails(req, res) {
         const { method } = req;
         const { orderId } = req.params;

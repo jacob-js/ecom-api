@@ -38,7 +38,7 @@ class OrdersService{
     };
 
     async getOrdersByDateInterval(startDate, endDate){
-        return await this.model.findAll({
+        const orders = await this.model.findAll({
             where: {
                 createdAt: {
                     [Op.between]: [startDate, endDate]
@@ -46,7 +46,40 @@ class OrdersService{
             },
             order: [['createdAt', 'DESC']],
             include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
-        })
+        });
+        const loopItems = new Promise((resolve, reject) =>{
+            let items = [];
+            orders.forEach(async (order, index) =>{
+                items = [ ...items, order.items];
+                if(index === orders.length - 1) resolve(items);
+            })
+        });
+        const items = await loopItems();
+        const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
+        const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
+        const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+        const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+        return { orders, totalCdf, totalUsd };
+    };
+
+    async getOrdersSum(){
+        const orders = await this.model.findAll({
+            order: [['createdAt', 'DESC']],
+            include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
+        });
+        const loopItems = new Promise((resolve, reject) =>{
+            let items = [];
+            orders.forEach(async (order, index) =>{
+                items = [ ...items, order.items];
+                if(index === orders.length - 1) resolve(items);
+            })
+        });
+        const items = await loopItems();
+        const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
+        const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
+        const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+        const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+        return { totalCdf, totalUsd };
     }
 };
 
