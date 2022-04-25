@@ -37,15 +37,13 @@ class OrdersService{
         })
     };
 
-    async getOrdersByDateInterval(startDate, endDate, limit, offset){
-        return await this.model.findAndCountAll({
+    async getOrdersByDateInterval(startDate, endDate){
+        return await this.model.findAll({
             where: {
                 createdAt: {
                     [Op.between]: [startDate, endDate]
                 }
             },
-            limit: parseInt(limit) || 10,
-            offset: parseInt(offset) || 0,
             order: [['createdAt', 'DESC']],
             include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
         })

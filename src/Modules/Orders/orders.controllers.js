@@ -15,7 +15,7 @@ const ordersController = {
             }else if(status){
                 orders = await OrdersService.getByStatus(status, limit, offset)
             }else if(startDate && endDate){
-                orders = await OrdersService.getOrdersByDateInterval(startDate, endDate, limit, offset);
+                orders = await OrdersService.getOrdersByDateInterval(startDate, endDate);
             }else{
                 orders = await OrdersService.getAll(limit, offset);
             }
