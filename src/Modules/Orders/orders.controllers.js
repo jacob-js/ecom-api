@@ -6,7 +6,7 @@ import OrdersService from "./orders.service";
 const ordersController = {
     async orders(req, res) {
         const { method } = req;
-        const { limit, offset, status } = req.query;
+        const { limit, offset, status, startDate, endDate } = req.query;
         const { userId, ordersId } = req.params;
         let orders;
         if(method === 'GET') {
@@ -14,8 +14,9 @@ const ordersController = {
                 orders = await OrdersService.getByUserId(userId, limit, offset);
             }else if(status){
                 orders = await OrdersService.getByStatus(status, limit, offset)
-            }
-            else{
+            }else if(startDate && endDate){
+                orders = await OrdersService.getOrdersByDateInterval(startDate, endDate, limit, offset);
+            }else{
                 orders = await OrdersService.getAll(limit, offset);
             }
             return sendResponse(res, 200, null, orders);
