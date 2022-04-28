@@ -54,12 +54,13 @@ class OrdersService{
                 if(index === orders.length - 1) resolve(items);
             })
         });
-        const items = await loopItems();
-        const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
-        const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
-        const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
-        const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
-        return { orders, totalCdf, totalUsd };
+        loopItems.then(items =>{
+            const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
+            const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
+            const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+            const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+            return { orders, totalCdf, totalUsd };
+        });
     };
 
     async getOrdersSum(){
@@ -74,12 +75,13 @@ class OrdersService{
                 if(index === orders.length - 1) resolve(items);
             })
         });
-        const items = await loopItems();
-        const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
-        const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
-        const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
-        const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
-        return { totalCdf, totalUsd };
+        loopItems.then(items =>{
+            const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
+            const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
+            const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+            const totalUsd = usdItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
+            return { totalCdf, totalUsd };
+        });
     }
 };
 
