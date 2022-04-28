@@ -5,8 +5,8 @@ import ordersController from "./orders.controllers";
 import { orderSchema } from "./orders.validations";
 
 const ordersRouter = Router()
-                            .get('/', verifyToken, checkIsAdmin, ordersController.orders)
-                            .get('/sum/all', verifyToken, checkIsAdmin, ordersController.ordersSum)
+                            .get('/', ordersController.orders)
+                            .get('/sum/all', ordersController.ordersSum)
                             .get('/user/:userId', verifyToken, ordersController.orders)
                             .post('/', verifyToken, validateSchema(orderSchema), ordersController.orders)
                             .get('/:orderId', verifyToken, ordersController.orderDetails)

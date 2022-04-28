@@ -50,11 +50,11 @@ class OrdersService{
         const loopItems = new Promise((resolve, reject) =>{
             let items = [];
             orders.forEach(async (order, index) =>{
-                items = [ ...items, order.items];
+                items = [ ...items, ...order.Items];
                 if(index === orders.length - 1) resolve(items);
             })
         });
-        loopItems.then(items =>{
+        return loopItems.then(items =>{
             const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
             const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
             const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
@@ -71,11 +71,11 @@ class OrdersService{
         const loopItems = new Promise((resolve, reject) =>{
             let items = [];
             orders.forEach(async (order, index) =>{
-                items = [ ...items, order.items];
+                items = [ ...items, ...order.Items];
                 if(index === orders.length - 1) resolve(items);
             })
         });
-        loopItems.then(items =>{
+        return loopItems.then(items =>{
             const cdfItems = items.filter(item => item.currency?.toLowerCase() === 'cdf');
             const usdItems = items.filter(item => item.currency?.toLowerCase() === 'usd');
             const totalCdf = cdfItems.reduce((acc, item) => acc + (item.unitAmount * item.quantity), 0);
