@@ -131,8 +131,8 @@ const usersController = {
 
     async resetPassword(req, res){
         const { method } = req;
-        const {username} = req.query;
-        const user = await UsersService.getByUsername(username)
+        const {phone} = req.query;
+        const user = await UsersService.getByUsername(`+${phone}`);
         if(method === 'GET'){
             if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); }
             const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
