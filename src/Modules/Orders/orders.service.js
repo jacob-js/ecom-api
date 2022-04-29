@@ -37,6 +37,18 @@ class OrdersService{
         })
     };
 
+    async getUsersOrdersByStatus(userId, status, offset, limit){
+        return await this.model.findAndCountAll({
+            where: {
+                userId, status
+            },
+            limit: parseInt(limit) || 10,
+            offset: parseInt(offset) || 0,
+            order: [['createdAt', 'DESC']],
+            include: [{ model: db.OrderItems, as: 'Items', include: 'Product' }, { model: db.Users, as: 'User' }]
+        })
+    };
+
     async getOrdersByDateInterval(startDate, endDate){
         const orders = await this.model.findAll({
             where: {

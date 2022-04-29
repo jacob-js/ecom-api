@@ -10,6 +10,9 @@ const ordersController = {
         const { userId, ordersId } = req.params;
         let orders;
         if(method === 'GET') {
+            if(userId && status){
+                orders = await OrdersService.getUsersOrdersByStatus(userId, status, offset, limit);
+            }
             if(userId){
                 orders = await OrdersService.getByUserId(userId, limit, offset);
             }else if(status){
