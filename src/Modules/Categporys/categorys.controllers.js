@@ -81,7 +81,7 @@ const categorysController = {
                 }else if(category){
                     categorys = categorys.concat(category.SubCategorys).concat([category]);
                 }else{
-                    subCateg = await db.SubCategorys.findOne({
+                    const subCateg = await db.SubCategorys.findOne({
                         where: { name }
                     });
                     if(subCateg){
