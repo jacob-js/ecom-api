@@ -3,17 +3,19 @@ import db from "../../db/models";
 import { createResetPwdToken, createSignupToken, createToken, decodeResetPwdToken, decodeSignupToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
+import { sendCode } from "../../Utils/nodemailer";
 import { getGoogleUser } from "../../Utils/oauth.google";
 import { sendSms } from "../../Utils/sms";
 import UsersService from "./users.service";
 
 const usersController = {
     signup: async (req, res) => {
-        const { password, phone } = req.body;
+        const { password, phone, email, fullname } = req.body;
         const hash = hashPassword(password);
         const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
         const token = createSignupToken({...req.body, password: hash}, code);
-        sendSms(phone, `Votre code de verification est ${code} valide pendant 5 minutes`);
+        sendSms(phone, `Votre code de confirmation est ${code} valide pendant 5 minutes`);
+        sendCode({ fullname, email }, code);
         return sendResponse(res, 200, "Code de vérification envoyé", { token });
     },
 
@@ -21,7 +23,7 @@ const usersController = {
         const { token, code } = req.body;
         const userData = await decodeSignupToken(token, code)
         if(userData){
-            const user = await db.Users.create({ ...userData, password: hash });
+            const user = await db.Users.create({ ...userData });
             const token = createToken(user.id);
             return sendResponse(res, 201, "Inscription réussie", { user, token });
         }else{
@@ -131,13 +133,18 @@ const usersController = {
 
     async resetPassword(req, res){
         const { method } = req;
-        const {phone} = req.query;
-        const user = await UsersService.getByUsername(`+${phone}`);
+        const {phone, email} = req.query;
+        const user = await UsersService.getByUsername(phone || email);
         if(method === 'GET'){
             if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); }
             const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
             const token = createResetPwdToken(user.id, code);
-            sendSms(user.phone, `Votre code de confirmation est : ${code}`)
+            if(phone){
+                sendSms(user.phone, `Votre code de confirmation est : ${code}`)
+            }
+            if(email){
+                sendCode(user.email, `Votre code de confirmation est : ${code}`)
+            }
             return sendResponse(res, 200, "Code de confirmation envoyé", { token, user })
         }else if(method === 'POST'){
             const {token, code} = req.body;

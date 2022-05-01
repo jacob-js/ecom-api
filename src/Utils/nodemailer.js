@@ -1,25 +1,26 @@
 import nodemailer from 'nodemailer';
 
+const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
+
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_PORT == 465,
     auth: {
-        user: process.env.MAIL_ACCOUNT,
-        pass: process.env.MAIL_PASSWORD,
-        type: 'OAuth2',
-        clientId: process.env.CLIENT_ID,
-        clientSecret: process.env.CLIENT_SECRET,
-        refreshToken: process.env.REFRESH_TOKEN,
+        user: SMTP_USER,
+        pass: SMTP_PASS,
     }
 });
 
-export const sendVerificationCode = async(user, code) => {
+export const sendCode = async(user, code) => {
     try {
         const info = await transporter.sendMail({
             from: '"Bweteta Shopping Mall"',
             to: user.email,
-            subject: ' Code de verification',
-            html: `<p>Bonjour ${user.fullname},</p> <p>Votre code de verification est: ${code}</p>`
-        })
+            subject: ' Code de confirmation',
+            html: `<p>Bonjour ${user.fullname || 'Mr, Mm, Mlle'},</p> <p>Votre code de confirmation est: <h1>${code}</h1> valide pendant 5 minutes</p>`
+        });
+        console.log('Message sent: %s', info);
     } catch (error) {
         console.log(error);        
     }
