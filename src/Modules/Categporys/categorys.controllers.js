@@ -77,7 +77,7 @@ const categorysController = {
                     include: ['SubCategorys']
                 });
                 if(parentCateg){
-                    categorys = categorys.concat(parentCateg.Categorys).concat(parentCateg.Categorys.map(categ => categ.SubCategorys));
+                    categorys.push(parentCateg);
                 }else if(category){
                     categorys = categorys.concat(category.SubCategorys).concat([category]);
                 }else{
@@ -93,8 +93,11 @@ const categorysController = {
                 }
             });
         }).then(async() => {
+            const allCats = categorys.reduce((acc, curr) => acc.concat(curr).concat(curr?.Categorys || []), []);
+            const allSubCats = allCats.reduce((acc, curr) => acc.concat(curr?.SubCategorys || []), []);
+            const allCategs = allCats.concat(allSubCats);
             const products = await db.Products.findAndCountAll({
-                where: { categoryId: {[ Op.or ]: [ categorys.map(category => category.pk) ]} },
+                where: { categoryId: {[ Op.or ]: [ allCategs.map(category => category.pk) ]} },
                 limit: parseInt(limit) || 10,
                 offset: parseInt(offset) || 0,
                 include: [ 'Colors', 'Ratings' ]
