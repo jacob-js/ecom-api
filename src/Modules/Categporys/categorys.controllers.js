@@ -68,11 +68,25 @@ const categorysController = {
         const categsArray = categoryName.split(',');
         new Promise((resolve, reject) => {
             categsArray.forEach(async (name, index) => {
-                const category = await db.Categorys.findOne({
-                    where: { name }
+                const parentCateg = await db.ProductsTypes.findOne({
+                    where: { name: name },
+                    include: [{ model: db.Categorys, as: 'Categorys', include: 'SubCategorys' }]
                 });
-                if(category){
-                    categorys.push(category);
+                const category = await db.Categorys.findOne({
+                    where: { name },
+                    include: ['SubCategorys']
+                });
+                if(parentCateg){
+                    categorys = categorys.concat(parentCateg.Categorys).concat(parentCateg.Categorys.map(categ => categ.SubCategorys));
+                }else if(category){
+                    categorys = categorys.concat(category.SubCategorys).concat([category]);
+                }else{
+                    subCateg = await db.SubCategorys.findOne({
+                        where: { name }
+                    });
+                    if(subCateg){
+                        categorys.push(subCateg);
+                    }
                 }
                 if(index === (categsArray.length - 1)){
                     resolve(categorys);
