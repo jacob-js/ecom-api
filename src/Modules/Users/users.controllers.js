@@ -36,7 +36,6 @@ const usersController = {
         try {
             const user = await UsersService.getByUsername(username);
             if (!user) return sendResponse(res, 401, "Utilisateur ou mot de passe incorrect");
-            if(!user.isVerified) return sendResponse(res, 401, "Veuillez vérifier votre compte", { isVerified: false });
             const isMatch = comparePassword(password, user.password);
             if(isMatch) {
                 const token = createToken(user.id);
