@@ -4,7 +4,10 @@ import router from './Router';
 import morgan from 'morgan';
 
 const app = express();
-const whiteList = [ 'http://localhost:3000', 'http://192.168.1.171:3000', 'http://192.168.8.15:3000', 'http://localhost:3001' ]
+const whiteList = [
+  'http://localhost:3000', 'http://192.168.1.171:3000', 'http://192.168.8.15:3000', 'http://localhost:3001',
+  'https://bweteta.com', 'http://bweteta.com'
+]
 const devMode = process.env.NODE_ENV === 'development';
 
 app.use(express.json());
