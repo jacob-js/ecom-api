@@ -20,7 +20,9 @@ const usersRouter = Router()
                             .get('/current', verifyToken, usersController.getCurrent)
                             .get('/current/admin', verifyToken, checkIsAdmin, usersController.getCurrent)
                             .get('/reset-password', usersController.resetPassword)
-                            .get('/details/:id', verifyToken, usersController.userDetails)
+                            .get('/reset-password', usersController.resetPassword)
+                            .post('/reset-password', usersController.resetPassword)
+                            .put('/details/:id', verifyToken, usersController.userDetails)
                             .put('/details/:id', verifyToken, fUploadMiddlware, checkUpdateEmailExist, checkUpdatePhoneExist, usersController.userDetails);
 
 export default usersRouter;

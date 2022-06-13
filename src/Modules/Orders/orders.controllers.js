@@ -6,8 +6,8 @@ import OrdersService from "./orders.service";
 const ordersController = {
     async orders(req, res) {
         const { method } = req;
-        const { limit, offset, status, startDate, endDate } = req.query;
-        const { userId, ordersId } = req.params;
+        const { limit, offset, status, startDate, endDate, userId } = req.query;
+        const { ordersId } = req.params;
         let orders;
         if(method === 'GET') {
             if(userId && status){

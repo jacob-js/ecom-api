@@ -18,9 +18,10 @@ const transporter = nodemailer.createTransport({
 export const sendCode = async(user, code) => {
     try {
         const info = await transporter.sendMail({
-            from: '"Bweteta Shopping Mall"',
+            from: `"Bweteta Shopping Mall" ${SMTP_USER}`,
             to: user.email,
-            subject: ' Code de confirmation',
+            subject: 'Code de confirmation',
+            text: `Votre code de confirmation est ${code}`,
             html: `<p>Bonjour ${user.fullname || 'Mr, Mm, Mlle'},</p> <p>Votre code de confirmation est: <h1>${code}</h1> valide pendant 5 minutes</p>`
         });
         console.log('Message sent: %s', info);

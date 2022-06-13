@@ -133,8 +133,8 @@ const usersController = {
     async resetPassword(req, res){
         const { method } = req;
         const {phone, email} = req.query;
-        const user = await UsersService.getByUsername(phone || email);
         if(method === 'GET'){
+            const user = await UsersService.getByUsername(phone || email);
             if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); }
             const code = Math.floor(Math.random() * (100000 - 10000) + 10000);
             const token = createResetPwdToken(user.id, code);
@@ -142,7 +142,7 @@ const usersController = {
                 sendSms(user.phone, `Votre code de confirmation est : ${code}`)
             }
             if(email){
-                sendCode(user.email, `Votre code de confirmation est : ${code}`)
+                sendCode(user, code)
             }
             return sendResponse(res, 200, "Code de confirmation envoyé", { token, user })
         }else if(method === 'POST'){
@@ -154,6 +154,7 @@ const usersController = {
                 return sendResponse(res, 403, "Le code de vérification est invalide");
             }
         }else if(method === 'PUT'){
+            const user = await UsersService.getByUsername(phone || email);
             if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); };
             const { newPwd } = req.body;
             await UsersService.resetPassword(user, newPwd);
