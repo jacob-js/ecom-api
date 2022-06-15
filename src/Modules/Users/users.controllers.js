@@ -1,6 +1,6 @@
 import { Op } from "sequelize";
 import db from "../../db/models";
-import { createResetPwdToken, createSignupToken, createToken, decodeResetPwdToken, decodeSignupToken } from "../../Utils/auth.utils";
+import { createResetPwdToken, createSignupToken, createToken, createUpdatePwdToken, decodeResetPwdToken, decodeSignupToken } from "../../Utils/auth.utils";
 import { comparePassword, hashPassword, sendResponse } from "../../Utils/helpers";
 import { uploadProductImage } from "../../Utils/imageUpload.util";
 import { sendCode } from "../../Utils/nodemailer";
@@ -149,13 +149,14 @@ const usersController = {
             const {token, code} = req.body;
             const userId = decodeResetPwdToken(token, code);
             if(userId){
-                return sendResponse(res, 200, null, { userId })
+                const updatePwdToken = createUpdatePwdToken(userId);
+                return sendResponse(res, 200, null, { updatePwdToken });
             }else{
                 return sendResponse(res, 403, "Le code de vérification est invalide");
             }
         }else if(method === 'PUT'){
-            const user = await UsersService.getByUsername(phone || email);
-            if(!user){ return sendResponse(res, 200, "Code de confirmation envoyé"); };
+            const user = await UsersService.getUserById(req.userId);
+            if(!user){ return sendResponse(res, 404, "Impossible de modifier le mot de passe"); };
             const { newPwd } = req.body;
             await UsersService.resetPassword(user, newPwd);
             return sendResponse(res, 200, "Mot de passe moifié", user)

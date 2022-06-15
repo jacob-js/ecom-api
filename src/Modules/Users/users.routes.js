@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { checkIsAdmin, verifyToken } from "../../Utils/auth.utils";
+import { checkIsAdmin, decodeUpdatePwdToken, verifyToken } from "../../Utils/auth.utils";
 import { validateSchema } from "../../Utils/helpers";
 import { fUploadMiddlware } from "../../Utils/imageUpload.util";
 import usersController from "./users.controllers";
@@ -20,7 +20,7 @@ const usersRouter = Router()
                             .get('/current', verifyToken, usersController.getCurrent)
                             .get('/current/admin', verifyToken, checkIsAdmin, usersController.getCurrent)
                             .get('/reset-password', usersController.resetPassword)
-                            .get('/reset-password', usersController.resetPassword)
+                            .put('/reset-password', decodeUpdatePwdToken, usersController.resetPassword)
                             .post('/reset-password', usersController.resetPassword)
                             .put('/details/:id', verifyToken, usersController.userDetails)
                             .put('/details/:id', verifyToken, fUploadMiddlware, checkUpdateEmailExist, checkUpdatePhoneExist, usersController.userDetails);

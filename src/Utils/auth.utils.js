@@ -70,3 +70,19 @@ export const decodeResetPwdToken = async(token, bodyCode) =>{
         return false
     }
 };
+
+export const createUpdatePwdToken = (userId) =>{
+    const token = jwt.sign({userId}, process.env.JWT_SECRET, {expiresIn: '5min'});
+    return token
+};
+
+export const decodeUpdatePwdToken = async(req, res, next) =>{
+    const token = req.headers.update_pwd_token;
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId = decoded.userId
+        return next();
+    } catch (error) {
+        return sendResponse(res, 403, "Token invalide");
+    }
+}
