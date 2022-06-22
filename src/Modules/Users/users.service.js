@@ -15,9 +15,9 @@ class UsersService{
         } });
     };
 
-    async resetPassword(user, newPassword){
+    async resetPassword(userId, newPassword){
         const password = hashPassword(newPassword);
-        await user.upate({ password: password })
+        await this.model.upate({ password: password }, { where: { id: userId } })
     }
 };
 

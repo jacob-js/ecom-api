@@ -147,7 +147,7 @@ const usersController = {
             return sendResponse(res, 200, "Code de confirmation envoyé", { token, user })
         }else if(method === 'POST'){
             const {token, code} = req.body;
-            const userId = decodeResetPwdToken(token, code);
+            const userId = await decodeResetPwdToken(token, code);
             if(userId){
                 const updatePwdToken = createUpdatePwdToken(userId);
                 return sendResponse(res, 200, null, { updatePwdToken });
@@ -158,7 +158,7 @@ const usersController = {
             const user = await UsersService.getUserById(req.userId);
             if(!user){ return sendResponse(res, 404, "Impossible de modifier le mot de passe"); };
             const { newPwd } = req.body;
-            await UsersService.resetPassword(user, newPwd);
+            await UsersService.resetPassword(req.userId, newPwd);
             return sendResponse(res, 200, "Mot de passe moifié", user)
         }
         return sendResponse(res, 405, "Methode non supportée");
