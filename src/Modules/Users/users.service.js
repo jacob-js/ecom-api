@@ -16,8 +16,9 @@ class UsersService{
     };
 
     async resetPassword(userId, newPassword){
+        const user = await db.Users.findOne({ where: { id: userId }})
         const password = hashPassword(newPassword);
-        await this.model.upate({ password: password }, { where: { id: userId } })
+        await user.update({ password: password })
     }
 };
 

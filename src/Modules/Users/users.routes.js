@@ -22,7 +22,7 @@ const usersRouter = Router()
                             .get('/reset-password', usersController.resetPassword)
                             .put('/reset-password', decodeUpdatePwdToken, usersController.resetPassword)
                             .post('/reset-password', usersController.resetPassword)
-                            .put('/details/:id', verifyToken, usersController.userDetails)
+                            .get('/details/:id', verifyToken, usersController.userDetails)
                             .put('/details/:id', verifyToken, fUploadMiddlware, checkUpdateEmailExist, checkUpdatePhoneExist, usersController.userDetails);
 
 export default usersRouter;

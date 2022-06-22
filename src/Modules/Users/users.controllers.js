@@ -176,6 +176,7 @@ const usersController = {
             if(req.files){
                 cover = await uploadProductImage(req, 'cover');
             }
+            console.log('body', req.body)
             await user.update({...req.body, cover: cover || user.cover});
             return sendResponse(res, 200, "Utilisateur modifié", user);
         }else if(method === "DELETE"){
