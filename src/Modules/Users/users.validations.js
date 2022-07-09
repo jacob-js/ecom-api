@@ -89,7 +89,7 @@ export const checkUpdateEmailExist = async(req, res, next) =>{
 export const checkAdminExist = async(req, res, next) =>{
     const { username } = req.body;
     const user = await db.Users.findOne({ where: {
-        [Op.or]: [{ email: username }, { phone: username }], isVerified: true
+        [Op.or]: [{ email: username }, { phone: username }]
     } });
     if(user){
         const admin = await db.Admins.findOne({ where: { userId: user.id } });
